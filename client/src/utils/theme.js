@@ -1,0 +1,45 @@
+export const lightTheme = {
+  text: {
+    heading: "rgb(94, 108, 132)",
+    signUp: "rgb(255, 255, 255)",
+    "signUp-bottom": "blue",
+    searchBar:"#172b4d",
+    "cbm-input":"#fff",
+    "create-board-button":"#a5adba",
+    "create-board-button-alt":"#fff",
+    "cbm-side":"#5e6c84",
+    "board-box":"#fff",
+  },
+  background: {
+    outer: "rgb(250, 251, 252)",
+    "login-box": "rgb(255, 255, 255)",
+    input: "rgb(250, 251, 252)",
+    "input-hover": "rgb(235, 236, 240)",
+    header: "#026aa7",
+    "searchBar-small": "hsla(0,0%,100%,.3)",
+    "searchBar-wide": "white",
+    "searchBar-small-hover":"hsla(0,0%,100%,.4)",
+    "cbm-input":"hsla(0,0%,100%,.3)",
+    "cbm-input-hover":"hsla(0,0%,100%,.2)",
+    "cbm-side":"#fff",
+  },
+  border: {
+    "input-border": "rgb(223, 225, 230)",
+    "input-border-focus": "rgb(76,154,255)",
+    line: "rgb(213, 216, 222)",
+  },
+  icon: {
+    "search-bar-small-icon": "white",
+    "search-bar-wide-icon": "rgb(66, 82, 110)",
+    header:"hsla(0,0%,100%,.3)",
+    "header-hover":"hsla(0,0%,100%,.2)",
+    "cbm-main-icon":"#fff",
+  },
+  button: {
+    signUp: "rgb(0, 82, 204)",
+    "signUp-hover": "rgb(0,101,255)",
+    "create-board":"#f4f5f7",
+    "create-board-alt":"#5aac44",
+  },
+};
+export const darkTheme = { text: {}, background: {}, icon: {}, button: {} };
