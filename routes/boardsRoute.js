@@ -53,12 +53,44 @@ router.get("/board/:boardid", async (req, res, next) => {
   try {
     console.log("hello");
     const { boardid } = req.params;
-    const board = await (
-      await BoardModel.findById(boardid).populate({
-        path: "user",
+    const board = await BoardModel.findById(boardid)
+      .populate({
+        path: "users",
         model: "user",
       })
-    ).exec();
+      .populate({
+        path: "toDoTasks",
+        model: "task",
+        populate:{
+          path:"users",
+          model:"user"
+        }
+      })
+      .populate({
+        path: "inDevelopmentTasks",
+        model: "task",
+        populate:{
+          path:"users",
+          model:"user"
+        }
+      })
+      .populate({
+        path: "toBeReviewedTasks",
+        model: "task",
+        populate:{
+          path:"users",
+          model:"user"
+        }
+      })
+      .populate({
+        path: "finishedTasks",
+        model: "task",
+        populate:{
+          path:"users",
+          model:"user"
+        }
+      })
+      .exec();
     res.status(200).json(board);
   } catch (err) {
     console.log(err);
@@ -70,9 +102,16 @@ router.get("/board/:boardid", async (req, res, next) => {
 
 router.put("/board/:boardid", async (req, res, next) => {
   try {
-    const { name, colorIndex, tasks, starred, categoryIndex,isChangingStar } = req.body;
+    const {
+      name,
+      colorIndex,
+      tasks,
+      starred,
+      categoryIndex,
+      isChangingStar,
+    } = req.body;
     const { boardid } = req.params;
-    const board = await BoardModel.findById(boardid);
+    let board = await BoardModel.findById(boardid);
     if (name) {
       board.name = name;
     }
@@ -92,15 +131,14 @@ router.put("/board/:boardid", async (req, res, next) => {
         toBeReviewedTasks,
         finishedTasks,
       } = tasks;
-      board = {
-        ...board,
-        toDoTasks,
-        inDevelopmentTasks,
-        toBeReviewedTasks,
-        finishedTasks,
-      };
+      console.log(finishedTasks);
+    
+      board.toDoTasks = [...toDoTasks];
+      board.inDevelopmentTasks = [...inDevelopmentTasks];
+      board.toBeReviewedTasks = toBeReviewedTasks;
+      board.finishedTasks = finishedTasks;
     }
-    await board.save();
+   await board.save();
     res.status(200).json({ operation: "success" });
   } catch (err) {
     console.log(err);

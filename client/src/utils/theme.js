@@ -22,6 +22,8 @@ export const lightTheme = {
     "cbm-input":"hsla(0,0%,100%,.3)",
     "cbm-input-hover":"hsla(0,0%,100%,.2)",
     "cbm-side":"#fff",
+    "board-category":"#ebecf0",
+    "board-category-task":"#fff",
   },
   border: {
     "input-border": "rgb(223, 225, 230)",

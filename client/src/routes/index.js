@@ -20,7 +20,7 @@ const routes = [
     component:Boards,
   },
   {
-    path:"/board/:boardid",
+    path:"/:boardid/dashboard",
     exact:true,
     name:"Board",
     component:Board

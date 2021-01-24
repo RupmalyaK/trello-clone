@@ -4,6 +4,7 @@ import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBoards } from "../../store/actions/boardAction.js";
 import BoardBox from "../../components/BoardBox";
+
 const Container = styled.div`
   .content {
     padding: 30px;
@@ -31,6 +32,7 @@ const Boards = (props) => {
   const dispatch = useDispatch();
   const { id } = useSelector((state) => state.user);
   const { boards } = useSelector((state) => state.boards);
+ 
 
   const showStarredBoards = () => {
     if (!boards) {

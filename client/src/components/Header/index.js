@@ -6,6 +6,7 @@ import {useSelector} from "react-redux";
 import {Add as AddIcon} from '@material-ui/icons';
 import CreateBoardModal from "../CreateBoardModal";
 import {colorArr} from "../../utils/constants.js";
+import Icon from "../Icon";
 const Container = styled.div`
   position: fixed;
   top: 0;
@@ -15,6 +16,7 @@ const Container = styled.div`
   border:1px solid ${(props) => props.theme.background.header};
   display:flex;
   padding-top:3px;
+  z-index:100;
   padding-bottom:2px;
   .search-container{
     flex:1;
@@ -63,19 +65,7 @@ cursor:pointer;
 background:${props => props.backgroundColor};
 `;
 
-const Icon = styled.div`
-width:32px;
-height:100%;
-color:white;
-background:${props => props.theme.icon.header};
-cursor:pointer;
-display:flex;
-justify-content:center;
-align-items:center;
-&:hover{
-    background:${props => props.theme.icon["header-hover"]};
-}
-`;
+
 const Header = () => {
   const {displayName,colorIndex} = useSelector(state => state.user);  
   const [showCBM,setShowCBM] = useState(false);

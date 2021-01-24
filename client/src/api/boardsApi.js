@@ -11,6 +11,14 @@ export const postBoard = (data) => {
 export const updateBoardById = (id,data) => {
   return PutRequest(`/boards/board/${id}`, data);
 }
+
+export const getBoardById = (id) => {
+  return GetRequest(`/boards/board/${id}`);
+}
+
+export const addTaskInBoard = (data) => {
+  return PostRequest("/tasks",data);
+}
 const GetRequest = (url) => {
   return new Promise(function (resolve, reject) {
     const obj = {

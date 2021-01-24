@@ -7,7 +7,7 @@ import authRouter from "./routes/authRoute.js";
 import userRouter from "./routes/userRoute.js";
 import bodyParser from "body-parser";
 import boardRouter from "./routes/boardsRoute.js";
-
+import taskRouter from "./routes/taskRoute.js";
 
 if (process.env.NODE_ENV !== "production") {
     dotEnv.config();
@@ -24,6 +24,7 @@ app.use(cors());
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/boards", boardRouter);
+app.use("/api/tasks",taskRouter);
 
 /**Static files*/
 

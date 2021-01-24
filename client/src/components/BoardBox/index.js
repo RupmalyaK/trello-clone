@@ -8,6 +8,7 @@ import {
 import { motion, useAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBoard } from "../../store/actions/boardAction.js";
+import {useHistory} from "react-router-dom";
 const Container = styled.div`
   width: 300px;
   height: 150px;
@@ -70,7 +71,10 @@ const StarContainer = styled(motion.div)`
 const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
   const starController = useAnimation();
   const dispatch = useDispatch();
+  const history = useHistory();
   const { id: userId } = useSelector((state) => state.user);
+
+
   const starShow = () => {
     starController.start({ x: 0, transition: { duration: 0.5 } });
   };
@@ -101,6 +105,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
       onMouseEnter={(e) => starShow()}
       onMouseLeave={(e) => starHide()}
       {...otherProps}
+      onClick={e => history.push(`/${id}/dashboard`)}
     >
       <StarContainer initial={{ x: 50 }} animate={starController}>
         {starred ? (

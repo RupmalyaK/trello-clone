@@ -1,4 +1,8 @@
 export const boardUsers = (users) => {
+    if(!users)
+        {
+            return [];
+        }
     const userArr = [];
     const map = {};
     users.forEach(user => {
