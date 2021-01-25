@@ -19,6 +19,19 @@ export const getBoardById = (id) => {
 export const addTaskInBoard = (data) => {
   return PostRequest("/tasks",data);
 }
+
+export const updateTaskById = (data) => {
+  return PutRequest("/tasks",data);
+}
+
+export const getTaskById = ({boardId,userId,taskId}) =>{
+  return GetRequest(`/tasks/task?boardId=${boardId}&userId=${userId}&taskId=${taskId}`);
+}
+
+export const deleteTaskById = (data) => {
+
+  return DeleteRequest("/tasks", data);
+}
 const GetRequest = (url) => {
   return new Promise(function (resolve, reject) {
     const obj = {
@@ -70,10 +83,11 @@ function PostRequest(url, data) {
   });
 }
 
-function DeleteRequest(url) {
+function DeleteRequest(url,data) {
   return new Promise(function (resolve, reject) {
     let obj = {
       url: url,
+      data:data,
       onSuccess: (resp) => {
         resolve(resp);
       },
@@ -83,7 +97,7 @@ function DeleteRequest(url) {
       },
     };
 
-    Api.deleteApi(obj.url, obj.onSuccess, obj.onError);
+    Api.deleteApi(obj.url,data, obj.onSuccess, obj.onError);
   });
 }
 

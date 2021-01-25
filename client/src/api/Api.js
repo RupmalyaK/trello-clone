@@ -35,7 +35,7 @@ export const getWithCancel = async (url, success, error) => {
     const CancelToken = _axios.CancelToken;
     window.source = CancelToken.source();
     const { data } = await axios({
-      mathod: "get",
+      method: "get",
       url: url,
       responseType: "application/json",
       cancelToken: window.source.token,
@@ -50,7 +50,7 @@ export const getWithCancel = async (url, success, error) => {
 export const get = async (url, success, error) => {
   try {
     const { data } = await axios({
-      mathod: "get",
+      method: "get",
       url: url,
       responseType: "application/json",
       headers: { authorization: "bearer " + getAuthToken() },
@@ -61,11 +61,13 @@ export const get = async (url, success, error) => {
   }
 };
 
-export const deleteApi = async (url, success, error) => {
+export const deleteApi = async (url,reqData, success, error) => {
+
   try {
     const { data } = await axios({
-      mathod: "delete",
+      method: "delete",
       url: url,
+      data:reqData,
       responseType: "application/json",
       headers: { authorization: "bearer " + getAuthToken() },
     });

@@ -34,9 +34,13 @@ margin-bottom:10px;
     height:100%;
     padding-top:21px;
     border:0px;
+    font-size:1.2rem;
     &:focus{
         border:none;
         outline:none;
+    }
+    ::placeholder{
+        font-size:1.2rem;
     }
 }
 .buttons-container{
@@ -143,7 +147,7 @@ const AddCard = ({handleClose,handleSubmit,category}) => {
     return (<Container>
         <div className="title-container">
             <SelectedColor backgroundColor={colorArr[colorIndex]}/>
-             <textarea className="title" value={title} onChange={e => setTitle(e.target.value)}/>
+             <textarea placeholder="Enter a title for this card..." className="title" value={title} onChange={e => setTitle(e.target.value)}/>
         </div>
         <div className="buttons-container">
                 <div className="left-side">

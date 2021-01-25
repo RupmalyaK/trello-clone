@@ -39,7 +39,7 @@ if (process.env.NODE_ENV === "production") {
 //Error Handling
 app.use(function (req, res) {
     res.type('json');
-    res.status(400).send({ errors: res.errors });
+    res.send({ errors: res.errors });
 })
 
 

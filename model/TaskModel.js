@@ -18,7 +18,7 @@ const taskSchema = new Schema({
         default:0,
         max:8,
     },
-    desctiption:{
+    description:{
         type:String,
         maxLength:240,
         minLength:0,

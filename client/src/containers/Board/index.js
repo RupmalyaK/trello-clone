@@ -105,7 +105,7 @@ const Board = (props) => {
   const { currentBoard } = useSelector((state) => state.boards);
   const [tasksIds, setTaskIds] = useState(null);
   const [isChangingName, setIsChangingname] = useState(false);
-  const [nameInput, setNameInput] = useState("");
+  const [nameInput, setNameInput] = useState(currentBoard ? currentBoard.name : "");
   const [isCreatingTDCard, setIsCreatingTDCard] = useState(false);
   const [isCreatingIDCard,setIsCreatingIDCard] = useState(false);
   const [isCreatingTBRCard,setIsCreatingTBRCard] = useState(false);

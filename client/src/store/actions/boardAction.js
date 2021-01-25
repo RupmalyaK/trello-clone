@@ -1,5 +1,14 @@
 import * as actionTypes from "./actionTypes.js";
-import { getBoardsByUserId, postBoard,updateBoardById,getBoardById,addTaskInBoard } from "../../api/boardsApi.js";
+import {
+  getBoardsByUserId,
+  postBoard,
+  updateBoardById,
+  getBoardById,
+  addTaskInBoard,
+  updateTaskById,
+  getTaskById,
+  deleteTaskById
+} from "../../api/boardsApi.js";
 import { boardUsers } from "../../utils/func.js";
 
 const createAction = (type, payLoad) => {
@@ -11,10 +20,10 @@ export const getAllBoards = (userId) => {
     dispatch(createAction(actionTypes.SET_IS_LOADING));
     try {
       const boards = await getBoardsByUserId(userId);
-      const boardsWithShortUsers = boards.map(board => {
+      const boardsWithShortUsers = boards.map((board) => {
         const editedUsers = boardUsers(board.users);
-        return {...board,users:editedUsers}
-      })
+        return { ...board, users: editedUsers };
+      });
       dispatch(createAction(actionTypes.SET_BOARDS, boardsWithShortUsers));
     } catch (err) {
       console.log(err);
@@ -34,27 +43,102 @@ export const createBoard = (name, userId, colorIndex) => {
   };
 };
 
-export const updateBoard = (id, { name,userId, colorIndex, tasks,isChangingStar, starred, categoryIndex }) => {
-  return async dispatch => {
+export const updateBoard = (
+  id,
+  { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex }
+) => {
+  return async (dispatch) => {
     dispatch(createAction(actionTypes.SET_IS_LOADING));
-    try{
-    await updateBoardById(id,{ name, colorIndex, tasks, starred, categoryIndex,isChangingStar });
-    dispatch(getAllBoards(userId));
+    try {
+      await updateBoardById(id, {
+        name,
+        colorIndex,
+        tasks,
+        starred,
+        categoryIndex,
+        isChangingStar,
+      });
+      dispatch(getAllBoards(userId));
+    } catch (err) {
+      console.log(err);
     }
-    catch(err)
-      {
-        console.log(err);
-      }
-  }
-}
-
+  };
+};
 
 export const getCurrentBoard = (id) => {
-  return async dispatch => {
+  return async (dispatch) => {
     dispatch(createAction(actionTypes.SET_IS_LOADING));
+    try {
+      const board = await getBoardById(id);
+      dispatch(createAction(actionTypes.SET_CURRENT_BOARD, board));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const updateAndGetBoard = (
+  id,
+  { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex }
+) => {
+  return async (dispatch) => {
+    dispatch(createAction(actionTypes.SET_IS_LOADING));
+    try {
+      await updateBoardById(id, {
+        name,
+        colorIndex,
+        tasks,
+        starred,
+        categoryIndex,
+        isChangingStar,
+      });
+      dispatch(getCurrentBoard(id));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const createTask = ({
+  name,
+  userId,
+  boardId,
+  description,
+  colorIndex,
+  category,
+}) => {
+  return async (dispatch) => {
+    try {
+      await addTaskInBoard({
+        name,
+        userId,
+        boardId,
+        description,
+        colorIndex,
+        category,
+      });
+      dispatch(getCurrentBoard(boardId));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+};
+
+export const updateTask = ({
+  taskId,
+  name,
+  description,
+  colorIndex,
+  newUserId,
+  userId,
+  boardId,
+}) => {
+  return async dispatch => {
     try{
-    const board = await getBoardById(id);
-    dispatch(createAction(actionTypes.SET_CURRENT_BOARD, board));
+      await updateTaskById({taskId,name,description,colorIndex,newUserId,userId,boardId});
+      dispatch(getCurrentBoard(boardId));
+      const task = await getTaskById({boardId,userId,taskId});
+      dispatch(createAction(actionTypes.SET_CURRENT_TASK,task))
     }
     catch(err)
       {
@@ -62,40 +146,25 @@ export const getCurrentBoard = (id) => {
       }
 
   }
-}
+};
 
-
-export const updateAndGetBoard = (id, { name,userId, colorIndex, tasks,isChangingStar, starred, categoryIndex }) => {
+export const deleteTask = ({boardId,userId,taskId}) => {
   return async dispatch => {
-    dispatch(createAction(actionTypes.SET_IS_LOADING));
+
     try{
-    await updateBoardById(id,{ name, colorIndex, tasks, starred, categoryIndex,isChangingStar });
-    dispatch(getCurrentBoard(id));
+      await deleteTaskById({boardId,userId,taskId});
+      dispatch(setCurrentTask(null));
+      dispatch(getCurrentBoard(boardId));
     }
-    catch(err)
+  catch(err)
       {
         console.log(err);
       }
-  }
-}
-
-export const createTask = ({name,userId,boardId,description,colorIndex,category}) => {
-  return async(dispatch) => {
-    try{
-        await addTaskInBoard({name,userId,boardId,description,colorIndex,category});
-        dispatch(getCurrentBoard(boardId));
-      }
-      catch(err)
-        {
-          console.log(err);
-        }
-  }
-} 
-
+}};
 export const setCurrentTask = (task) => {
-    return createAction(actionTypes.SET_CURRENT_TASK ,task)
-}
+  return createAction(actionTypes.SET_CURRENT_TASK, task);
+};
 
 export const setTasks = (tasks) => {
-  return createAction(actionTypes.SET_TASKS,tasks);
-}
+  return createAction(actionTypes.SET_TASKS, tasks);
+};
