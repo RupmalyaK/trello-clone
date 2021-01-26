@@ -1,6 +1,7 @@
-import BoardModel from "../model/BoardModal.js";
+import BoardModel from "../model/BoardModel.js";
 import { Router } from "express";
 import { isAuthenticated } from "../controller/authController.js";
+import {isUserinBoard} from "../controller/boardController.js";
 
 const router = new Router();
 
@@ -51,7 +52,7 @@ router.get("/:userid", isAuthenticated, async (req, res, next) => {
 
 router.get("/board/:boardid", async (req, res, next) => {
   try {
-    console.log("hello");
+
     const { boardid } = req.params;
     const board = await BoardModel.findById(boardid)
       .populate({
@@ -146,6 +147,39 @@ router.put("/board/:boardid", async (req, res, next) => {
     res.error = err;
     next();
   }
+});
+
+router.put("/adduser",isAuthenticated, isUserinBoard, async(req, res, next) => {
+  try{
+    if(! req.userPresentInBoard)
+      {
+        throw new Error("User not in board");
+      }
+      const {boardId,otherUserId} = req.body;
+    
+      const board = await BoardModel.findById(boardId);
+      let flag = false;
+      board.users.forEach(user => {
+        if(user._id.toString() === otherUserId)
+          {
+            flag = true;
+          }
+      });
+      if(flag)
+        {
+          throw new Error("User already in board");
+        }
+        board.users.push(otherUserId);
+        await board.save();
+        res.status(200).json({"operation":"success"});
+  }
+  catch(err)
+    {
+      console.log(err);
+      res.status(500);
+      res.error = err;
+      next();
+    }
 });
 
 router.get("/", async (req, res) => {

@@ -7,7 +7,8 @@ import {
   addTaskInBoard,
   updateTaskById,
   getTaskById,
-  deleteTaskById
+  deleteTaskById,
+  addUserToBoard
 } from "../../api/boardsApi.js";
 import { boardUsers } from "../../utils/func.js";
 
@@ -65,9 +66,13 @@ export const updateBoard = (
   };
 };
 
-export const getCurrentBoard = (id) => {
+export const getCurrentBoard = (id,setIsLoading) => {
   return async (dispatch) => {
-    dispatch(createAction(actionTypes.SET_IS_LOADING));
+    if(setIsLoading)
+      {
+        dispatch(createAction(actionTypes.SET_IS_LOADING));
+      }
+    
     try {
       const board = await getBoardById(id);
       dispatch(createAction(actionTypes.SET_CURRENT_BOARD, board));
@@ -79,10 +84,10 @@ export const getCurrentBoard = (id) => {
 
 export const updateAndGetBoard = (
   id,
-  { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex }
+  { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex },setIsLoading
 ) => {
   return async (dispatch) => {
-    dispatch(createAction(actionTypes.SET_IS_LOADING));
+
     try {
       await updateBoardById(id, {
         name,
@@ -92,7 +97,7 @@ export const updateAndGetBoard = (
         categoryIndex,
         isChangingStar,
       });
-      dispatch(getCurrentBoard(id));
+      dispatch(getCurrentBoard(id,setIsLoading));
     } catch (err) {
       console.log(err);
     }
@@ -165,6 +170,12 @@ export const setCurrentTask = (task) => {
   return createAction(actionTypes.SET_CURRENT_TASK, task);
 };
 
+export const addUserBoard = ({boardId,userId,otherUserId}) => {
+  return async dispatch => {
+    await addUserToBoard({boardId,userId,otherUserId});
+    dispatch(getCurrentBoard(boardId,true));
+  }
+}
 export const setTasks = (tasks) => {
   return createAction(actionTypes.SET_TASKS, tasks);
 };

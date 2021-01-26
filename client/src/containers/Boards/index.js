@@ -4,6 +4,8 @@ import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBoards } from "../../store/actions/boardAction.js";
 import BoardBox from "../../components/BoardBox";
+import {useHistory} from "react-router-dom";
+import LoadingScreen from "../../components/LoadingScreen";
 
 const Container = styled.div`
   .content {
@@ -31,9 +33,21 @@ const Container = styled.div`
 const Boards = (props) => {
   const dispatch = useDispatch();
   const { id } = useSelector((state) => state.user);
-  const { boards } = useSelector((state) => state.boards);
- 
+  const { boards,isLoading } = useSelector((state) => state.boards);
+  const history = useHistory();
+  useEffect(() => {
+    dispatch(getAllBoards(id));
+  }, []);
 
+  if(!id)
+    {
+        history.push("/signin");
+        return <></>;
+    }
+  if(isLoading)
+    {
+      return <LoadingScreen />;
+    }
   const showStarredBoards = () => {
     if (!boards) {
       return;
@@ -74,9 +88,7 @@ const Boards = (props) => {
     return BoardComponents;
   };
 
-  useEffect(() => {
-    dispatch(getAllBoards(id));
-  }, []);
+ 
   return (
     <Container>
       <Header />

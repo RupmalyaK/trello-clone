@@ -14,10 +14,19 @@ const Layout = (props) => {
   const history = useHistory();
   const currentTheme = useSelector(state => state.system.currentTheme);
   const theme = currentTheme === "light" ? lightTheme : darkTheme;
-
+  
+  useEffect(() => {
+    if(!id)
+      {
+        history.push("/signin");
+        return;
+      }
+   
+  },[])
 
   const menu = routes.map((route, index) => {
     const { path, exact, name, authRequired, authLevel } = route;
+   
     return route.component ? (
       <Route
         key={index}

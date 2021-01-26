@@ -1,8 +1,8 @@
-import BoardModel from "../model/BoardModal.js";
+import BoardModel from "../model/BoardModel.js";
 
 export const isUserinBoard = async (req, res, next) => {
   const { userId, boardId } = req.body;
-    console.log(userId,boardId);
+  
   try {
     const board = await BoardModel.findById(boardId);
     let flag = false;

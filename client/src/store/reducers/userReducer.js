@@ -10,6 +10,9 @@ const INITIAL_STATE = {
   signUpErrors:null,
   signInErrors:null,
   isSigningUp:false,
+  userName:"",
+  isSearchingUsers:false,
+  searchedUsers:null
 
 };
 
@@ -23,7 +26,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
         email,
         createdAt,
         _id: id,
-        colorIndex
+        colorIndex,
+        userName
       } = payLoad;
       return {
         ...state,
@@ -32,7 +36,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
         accountCreatedAt: createdAt,
         id,
         signUpErrors:null,
-        colorIndex
+        colorIndex,
+        userName
       };
     }
     case actionTypes.GET_USERS_BY_NAME:

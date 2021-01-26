@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import Header from "../../components/Header";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,6 +21,10 @@ import {
 } from "@material-ui/icons/";
 import AddCard from "../../components/AddCard";
 import Icon from "../../components/Icon";
+import Invite from "../../components/Invite";
+import { boardUsers } from "../../utils/func.js";
+import { useHistory } from "react-router-dom";
+import LoadingScreen from "../../components/LoadingScreen";
 const Container = styled.div`
   width: 100vw;
   min-height: 100vh;
@@ -99,20 +103,62 @@ const Container = styled.div`
   }
 `;
 
+const UserIconContainer = styled.div`
+  background: ${(props) => props.backgroundColor};
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  color: ${(props) => props.theme.text["board-box"]};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: default;
+  &:hover {
+    &::before {
+      content: "${(props) => props.userName}";
+      position: absolute;
+      display: block;
+      height: 22px;
+      left: 50%;
+      top: 50%;
+      font-size: 1rem;
+      color: black;
+      padding: 2px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
+        0 0 0 1px rgba(9, 30, 66, 0.08);
+    }
+  }
+`;
+
 const Board = (props) => {
   const { boardid } = useParams();
   const dispatch = useDispatch();
-  const { currentBoard } = useSelector((state) => state.boards);
+  const { currentBoard,isLoading } = useSelector((state) => state.boards);
   const [tasksIds, setTaskIds] = useState(null);
   const [isChangingName, setIsChangingname] = useState(false);
-  const [nameInput, setNameInput] = useState(currentBoard ? currentBoard.name : "");
+  const [nameInput, setNameInput] = useState(
+    currentBoard ? currentBoard.name : ""
+  );
+  const history = useHistory();
   const [isCreatingTDCard, setIsCreatingTDCard] = useState(false);
-  const [isCreatingIDCard,setIsCreatingIDCard] = useState(false);
-  const [isCreatingTBRCard,setIsCreatingTBRCard] = useState(false);
-  const [isCreatingFCard,setIsCreatingFCard] = useState(false);
+  const [isCreatingIDCard, setIsCreatingIDCard] = useState(false);
+  const [isCreatingTBRCard, setIsCreatingTBRCard] = useState(false);
+  const [isCreatingFCard, setIsCreatingFCard] = useState(false);
+  const boardNameInputRef = useRef(null);
+  const [isShowingInvite, setIsShowingInvite] = useState(false);
+  const { id: userId } = useSelector((state) => state.user);
+
 
   
-  const {id:userId} = useSelector(state => state.user);
+  useEffect(() => {
+    if (isChangingName) {
+      boardNameInputRef.current.focus();
+    }
+  }, [isChangingName]);
+
   useEffect(() => {
     if (currentBoard) {
       const tasks = {
@@ -136,9 +182,33 @@ const Board = (props) => {
   }, [currentBoard]);
 
   useEffect(() => {
-    dispatch(getCurrentBoard(boardid));
+    dispatch(getCurrentBoard(boardid,true));
   }, []);
 
+  if(!userId)
+    {
+      history.push("/signin");
+      return <></>
+    }
+  if(isLoading)
+    {
+      return <LoadingScreen />
+    }  
+  const showUsers = () => {
+    if (!currentBoard) {
+      return;
+    }
+    const UserComponenets = boardUsers(currentBoard.users).map((user) => (
+      <UserIconContainer
+        backgroundColor={colorArr[user.colorIndex]}
+        className="ml-3"
+        userName={user.userName}
+      >
+        {user.shortName}
+      </UserIconContainer>
+    ));
+    return UserComponenets;
+  };
   const moveActualTasks = (
     sourceCategory,
     sourceIndex,
@@ -186,28 +256,35 @@ const Board = (props) => {
     temp[destinationCategory].splice(destinationIndex, 0, task[0]);
     dispatch(updateBoard(boardid, { tasks: temp }));
   };
-  const handleCreateTask = (name,colorIndex,category) => {
-    if(!name)
-      {
+  const handleCreateTask = (name, colorIndex, category) => {
+    if (!name) {
+      return;
+    }
+    dispatch(
+      createTask({
+        name,
+        userId,
+        boardId: boardid,
+        description: "",
+        colorIndex,
+        category,
+      })
+    );
+
+    switch (category) {
+      case "toDo":
+        setIsCreatingTDCard(false);
         return;
-      }
-    dispatch(createTask({name,userId,boardId:boardid,description:"",colorIndex,category}));
-    switch(category)
-      {
-        case "toDo":
-              setIsCreatingTDCard(false);
-              return;
-        case "inDevelopment":
-              setIsCreatingIDCard(false);
-              return;
-        case "toBeReviewed":
-              setIsCreatingTBRCard(false);
-              return;  
-        case "finished":
-              setIsCreatingFCard(false);                
-      }
-    
-  }
+      case "inDevelopment":
+        setIsCreatingIDCard(false);
+        return;
+      case "toBeReviewed":
+        setIsCreatingTBRCard(false);
+        return;
+      case "finished":
+        setIsCreatingFCard(false);
+    }
+  };
   const showTasks = (tasks) => {
     const TaskComponents = tasks.map((task, index) => (
       <Task index={index} {...task} />
@@ -237,12 +314,16 @@ const Board = (props) => {
                   {!isCreatingTDCard && (
                     <button
                       className="add-card-button"
-                      onClick={(e) => setIsCreatingTDCard(true)}
+                      onClick={(e) => {
+                        setIsCreatingIDCard(false);
+                        setIsCreatingTDCard(true);
+                        setIsCreatingTBRCard(false);
+                        setIsCreatingFCard(false);
+                      }}
                     >
                       <AddIcon
                         className="mr-3"
                         style={{ fontSize: "2.5rem" }}
-                     
                       />{" "}
                       Add another card
                     </button>
@@ -274,12 +355,16 @@ const Board = (props) => {
                   {!isCreatingIDCard && (
                     <button
                       className="add-card-button"
-                      onClick={(e) => setIsCreatingIDCard(true)}
+                      onClick={(e) => {
+                        setIsCreatingIDCard(true);
+                        setIsCreatingTDCard(false);
+                        setIsCreatingTBRCard(false);
+                        setIsCreatingFCard(false);
+                      }}
                     >
                       <AddIcon
                         className="mr-3"
                         style={{ fontSize: "2.5rem" }}
-                     
                       />{" "}
                       Add another card
                     </button>
@@ -291,7 +376,7 @@ const Board = (props) => {
                       category="inDevelopment"
                     />
                   )}
-                  
+
                   {provided.placeholder}
                 </div>
               )}
@@ -312,12 +397,16 @@ const Board = (props) => {
                   {!isCreatingTBRCard && (
                     <button
                       className="add-card-button"
-                      onClick={(e) => setIsCreatingTBRCard(true)}
+                      onClick={(e) => {
+                        setIsCreatingIDCard(false);
+                        setIsCreatingTDCard(false);
+                        setIsCreatingTBRCard(true);
+                        setIsCreatingFCard(false);
+                      }}
                     >
                       <AddIcon
                         className="mr-3"
                         style={{ fontSize: "2.5rem" }}
-                     
                       />{" "}
                       Add another card
                     </button>
@@ -349,12 +438,16 @@ const Board = (props) => {
                   {!isCreatingFCard && (
                     <button
                       className="add-card-button"
-                      onClick={(e) => setIsCreatingFCard(true)}
+                      onClick={(e) => {
+                        setIsCreatingIDCard(false);
+                        setIsCreatingTDCard(false);
+                        setIsCreatingTBRCard(false);
+                        setIsCreatingFCard(true);
+                      }}
                     >
                       <AddIcon
                         className="mr-3"
                         style={{ fontSize: "2.5rem" }}
-                     
                       />{" "}
                       Add another card
                     </button>
@@ -406,48 +499,71 @@ const Board = (props) => {
                 className="name-input"
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
+                ref={boardNameInputRef}
                 onKeyDown={(e) => {
                   if (e.keyCode === 13) {
-                    dispatch(updateBoard(boardid, { name: nameInput }));
+                    dispatch(updateBoard(boardid, { name: nameInput },true));
                     setIsChangingname(false);
                   }
                 }}
               />
-              <div className="send-icon-container">
-                <SendIcon
-                  onClick={(e) => {
-                    dispatch(updateBoard(boardid, { name: nameInput }));
-                    setIsChangingname(false);
-                  }}
-                />
+              <div
+                className="send-icon-container"
+                onClick={(e) => {
+                  dispatch(updateBoard(boardid, { name: nameInput },true));
+                  setIsChangingname(false);
+                }}
+              >
+                <SendIcon />
               </div>
             </div>
           ) : (
             currentBoard.name
           )}
         </span>
-        <Icon className="mr-2">
-          <CreateIcon onClick={(e) => setIsChangingname(!isChangingName)} />
+        <Icon
+          className="mr-2"
+          onClick={(e) => setIsChangingname(!isChangingName)}
+        >
+          <CreateIcon />
         </Icon>
-        <Icon>
+        <Icon
+          onClick={(e) =>
+            dispatch(
+              updateBoard(boardid, {
+                starred: !currentBoard.starred,
+                isChangingStar: true,
+              },true)
+            )
+          }
+        >
           {currentBoard && !currentBoard.starred ? (
-            <StarBorderIcon
-              onClick={(e) =>
-                dispatch(
-                  updateBoard(boardid, { starred: true, isChangingStar: true })
-                )
-              }
-            />
+            <StarBorderIcon />
           ) : (
-            <StarIcon
-              onClick={(e) =>
-                dispatch(
-                  updateBoard(boardid, { starred: false, isChangingStar: true })
-                )
-              }
-            />
+            <StarIcon />
           )}
         </Icon>
+        <div
+          className="invite-container"
+          style={{ position: "relative" }}
+          className="ml-2"
+        >
+          <Icon
+            style={{
+              width: "auto",
+              padding: "10px",
+              fontSize: "1.2rem",
+              position: "relative",
+            }}
+            onClick={(e) => setIsShowingInvite(true)}
+          >
+            <span>Invite</span>
+          </Icon>
+          {isShowingInvite && (
+            <Invite handleClose={(e) => setIsShowingInvite(false)} />
+          )}
+        </div>
+        {showUsers()}
       </div>
       <div className="content">
         <DragDropContext onDragEnd={handleDragEnd}>

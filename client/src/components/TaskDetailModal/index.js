@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
@@ -134,6 +134,8 @@ const TaskDetail = ({ onHide, ...props }) => {
   const currentTask = useSelector((state) => state.boards.currentTask);
   const { currentBoard } = useSelector((state) => state.boards);
   const { id: userId } = useSelector((state) => state.user);
+  const nameInputRef = useRef(null);
+  const descInputRef = useRef(null);
   const [descInput, setDescInput] = useState(
     currentTask ? currentTask.description : ""
   );
@@ -149,7 +151,12 @@ const TaskDetail = ({ onHide, ...props }) => {
     }
   }, [currentTask]);
 
-  const { name, description, users, colorIndex, _id } = currentTask;
+  useEffect(() =>{
+    updatingName && nameInputRef.current && nameInputRef.current.focus();
+    updatingDesc && descInputRef.current && descInputRef.current.focus();
+  },[updatingName,updatingDesc])
+
+  const { name, description, users, colorIndex, _id } = currentTask || {};
   const showUsers = () => {
     const shortNamedUsers = boardUsers(users);
 
@@ -177,6 +184,7 @@ const TaskDetail = ({ onHide, ...props }) => {
                   className="name-input"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
+                  ref={nameInputRef}
                   onKeyDown={(e) => {
                     if (e.keyCode === 13) {
                       dispatch(
@@ -217,9 +225,7 @@ const TaskDetail = ({ onHide, ...props }) => {
           >
             {updatingName ? <CloseIcon /> : <EditIcon />}
           </Icon>
-          <Icon>
-            <DeleteIcon
-              onClick={async (e) => {
+          <Icon  onClick={async (e) => {
                 const result = await Swal.fire({
                   title: "Are you sure?",
                   text: "You won't be able to revert this!",
@@ -237,7 +243,9 @@ const TaskDetail = ({ onHide, ...props }) => {
                   deleteTask({ taskId: _id, boardId: currentBoard._id, userId })
                 );
                 onHide();
-              }}
+              }}>
+            <DeleteIcon
+             
             />
           </Icon>
         </div>
@@ -262,6 +270,7 @@ const TaskDetail = ({ onHide, ...props }) => {
               onChange={(e) => setDescInput(e.target.value)}
               className="desc-text"
               placeholder={description}
+              ref={descInputRef}
               onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   dispatch(

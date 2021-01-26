@@ -19,6 +19,7 @@ const boardsSchema = new Schema({
     max: 8,
     min:-1,
   },
+
   toDoTasks: {
     type: [{ type: Schema.Types.ObjectId, ref: "task" }],
     default: [],

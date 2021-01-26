@@ -8,7 +8,7 @@ import {
 import { motion, useAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBoard } from "../../store/actions/boardAction.js";
-import {useHistory} from "react-router-dom";
+import { useHistory } from "react-router-dom";
 const Container = styled.div`
   width: 300px;
   height: 150px;
@@ -74,7 +74,6 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
   const history = useHistory();
   const { id: userId } = useSelector((state) => state.user);
 
-
   const starShow = () => {
     starController.start({ x: 0, transition: { duration: 0.5 } });
   };
@@ -91,7 +90,10 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
         break;
       }
       UserIconComponenets.push(
-        <UserIconContainer backgroundColor={colorArr[users[i].colorIndex]}>
+        <UserIconContainer
+          backgroundColor={colorArr[users[i].colorIndex]}
+          className="ml-3"
+        >
           {users[i].shortName}
         </UserIconContainer>
       );
@@ -105,24 +107,34 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
       onMouseEnter={(e) => starShow()}
       onMouseLeave={(e) => starHide()}
       {...otherProps}
-      onClick={e => history.push(`/${id}/dashboard`)}
+      onClick={(e) => history.push(`/${id}/dashboard`)}
     >
       <StarContainer initial={{ x: 50 }} animate={starController}>
         {starred ? (
           <></>
         ) : (
           <StarBorderIcon
-            onClick={(e) =>
-              dispatch(updateBoard(id, { starred: true, userId,isChangingStar:true }))
-            }
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              dispatch(
+                updateBoard(id, { starred: true, userId, isChangingStar: true })
+              );
+            }}
           />
         )}
       </StarContainer>
       {starred && (
-        <StarContainer StarBorderIcon
-        onClick={(e) =>
-          dispatch(updateBoard(id, { starred: false,isChangingStar:true, userId }))
-        }>
+        <StarContainer
+          StarBorderIcon
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            dispatch(
+              updateBoard(id, { starred: false, isChangingStar: true, userId })
+            );
+          }}
+        >
           <StarIcon />
         </StarContainer>
       )}

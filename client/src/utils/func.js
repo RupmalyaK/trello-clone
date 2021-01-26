@@ -3,12 +3,16 @@ export const boardUsers = (users) => {
         {
             return [];
         }
+     
     const userArr = [];
     const map = {};
     users.forEach(user => {
       for(let i = 0; i <= user.displayName.length-1; i++)
         {
-           
+           if(!user.displayName)
+            {
+                continue;
+            }
             if(map[user.displayName.slice(0,i+1) + user.colorIndex])
                 {
                     if(i === user.displayName.length - 1)

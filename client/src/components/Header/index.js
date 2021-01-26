@@ -6,6 +6,7 @@ import {useSelector} from "react-redux";
 import {Add as AddIcon} from '@material-ui/icons';
 import CreateBoardModal from "../CreateBoardModal";
 import {colorArr} from "../../utils/constants.js";
+import {useHistory} from "react-router-dom";
 import Icon from "../Icon";
 const Container = styled.div`
   position: fixed;
@@ -47,6 +48,7 @@ const Logo = styled.img`
 height:30px;
 width:80px;
 opacity:0.5;
+cursor:pointer;
 &:hover{
     opacity:1;
 }
@@ -69,6 +71,7 @@ background:${props => props.backgroundColor};
 const Header = () => {
   const {displayName,colorIndex} = useSelector(state => state.user);  
   const [showCBM,setShowCBM] = useState(false);
+  const history = useHistory();
   return (
     <Container>
         <CreateBoardModal show={showCBM} onHide={() => setShowCBM(false)}/>
@@ -76,7 +79,7 @@ const Header = () => {
           <SearchBar />
       </div>
       <div className="logo-container">
-          <Logo src={logo} alt="logo"/>
+          <Logo src={logo} alt="logo" onClick={e => history.push("/boards")}/>
       </div>
       <div className="buttons-container">
           <Icon className="mr-3" onClick={e => setShowCBM(true)}>

@@ -8,30 +8,34 @@ export const postBoard = (data) => {
   return PostRequest("/boards", data);
 };
 
-export const updateBoardById = (id,data) => {
+export const updateBoardById = (id, data) => {
   return PutRequest(`/boards/board/${id}`, data);
-}
+};
 
 export const getBoardById = (id) => {
   return GetRequest(`/boards/board/${id}`);
-}
+};
 
 export const addTaskInBoard = (data) => {
-  return PostRequest("/tasks",data);
-}
+  return PostRequest("/tasks", data);
+};
 
 export const updateTaskById = (data) => {
-  return PutRequest("/tasks",data);
-}
+  return PutRequest("/tasks", data);
+};
 
-export const getTaskById = ({boardId,userId,taskId}) =>{
-  return GetRequest(`/tasks/task?boardId=${boardId}&userId=${userId}&taskId=${taskId}`);
-}
+export const getTaskById = ({ boardId, userId, taskId }) => {
+  return GetRequest(
+    `/tasks/task?boardId=${boardId}&userId=${userId}&taskId=${taskId}`
+  );
+};
 
+export const addUserToBoard = (data) => {
+  return PutRequest("/boards/adduser",data);
+}
 export const deleteTaskById = (data) => {
-
   return DeleteRequest("/tasks", data);
-}
+};
 const GetRequest = (url) => {
   return new Promise(function (resolve, reject) {
     const obj = {
@@ -83,11 +87,11 @@ function PostRequest(url, data) {
   });
 }
 
-function DeleteRequest(url,data) {
+function DeleteRequest(url, data) {
   return new Promise(function (resolve, reject) {
     let obj = {
       url: url,
-      data:data,
+      data: data,
       onSuccess: (resp) => {
         resolve(resp);
       },
@@ -97,7 +101,7 @@ function DeleteRequest(url,data) {
       },
     };
 
-    Api.deleteApi(obj.url,data, obj.onSuccess, obj.onError);
+    Api.deleteApi(obj.url, data, obj.onSuccess, obj.onError);
   });
 }
 

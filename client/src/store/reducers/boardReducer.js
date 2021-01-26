@@ -5,6 +5,8 @@ const INITIAL_STATE = {
   currentBoard: null,
   isLoading: false,
   currentTask:{},
+  isSearchingUsers:false,
+  searchedUsers:null,
 };
 
 const boardReducer = (state = INITIAL_STATE, action) => {
@@ -35,6 +37,7 @@ const boardReducer = (state = INITIAL_STATE, action) => {
     }
     case actionTypes.SET_CURRENT_TASK:
       return {...state,currentTask:payLoad};
+
     default:
       return state;
   }

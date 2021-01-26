@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 const router = Router();
 
 
-router.get("/search/:searchString", isAuthenticated, async (req, res, next) => {
+router.get("/search/:searchString",/* isAuthenticated,*/ async (req, res, next) => {
   const { searchString } = req.params;
   try {
     if (!searchString) {
@@ -16,13 +16,13 @@ router.get("/search/:searchString", isAuthenticated, async (req, res, next) => {
       return;
     }
     const users = await UserModel.find({
-      displayName: { $regex: new RegExp(searchString, "i") },
+      userName: { $regex: new RegExp(searchString, "i") },
     });
 
     const startWith = [];
     const notStartWith = [];
     users.forEach((user) => {
-      if (user.displayName.match(new RegExp(`^${searchString}`, "i"))) {
+      if (user.userName.match(new RegExp(`^${searchString}`, "i"))) {
         startWith.push(user);
       } else {
         notStartWith.push(user);
@@ -81,6 +81,8 @@ router.get("/getidbyemail/:email", async (req,res,next) => {
       next(err);
     }
 });
+
+
 
 
 export default router;

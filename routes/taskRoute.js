@@ -1,4 +1,4 @@
-import BoardModel from "../model/BoardModal.js";
+import BoardModel from "../model/BoardModel.js";
 import TaskModel from "../model/TaskModel.js";
 import { Router } from "express";
 import { isAuthenticated } from "../controller/authController.js";

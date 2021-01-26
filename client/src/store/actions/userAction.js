@@ -59,12 +59,12 @@ export const signUpAsync = (data) => {
   };
 };
 
-export const signInAsync = (email, password, socketId) => {
+export const signInAsync = (email, password) => {
 
   return async (dispatch) => {
   
     try {
-      const user = await authApi.login({ email, password, socketId });
+      const user = await authApi.login({ email, password });
       console.log(user.accessToken, "this is it");
       cookies.set("accesToken", user.accessToken, { expires: 365, path:'/'}); 
       dispatch(createAction(actionTypes.SET_USER_DETAIL, user));
@@ -74,7 +74,7 @@ export const signInAsync = (email, password, socketId) => {
     }
   };
 };
-export const getUsersByName = (searchString) => {
+export const getUsersByUserName = (searchString) => {
   return async (dispatch) => {
     try {
       if (!searchString) {
