@@ -28,9 +28,9 @@ import LoadingScreen from "../../components/LoadingScreen";
 import UserIconContainer from "../../components/UserIcon";
 const Container = styled.div`
   width: 100vw;
-  min-height: 100vh;
+  height:100vh;
   background: ${(props) => props.backgroundColor};
-
+  overflow-y:scroll;
   .top-content {
     margin-top: 40px;
     justify-content: flex-start;
