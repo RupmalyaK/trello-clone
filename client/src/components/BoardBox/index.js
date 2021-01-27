@@ -87,6 +87,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
           backgroundColor={colorArr[users[i].colorIndex]}
           className="mr-3"
           userName={users[i].userName}
+          key={i}
         >
           {users[i].shortName}
         </UserIconContainer>

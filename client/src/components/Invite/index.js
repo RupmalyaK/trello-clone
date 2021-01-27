@@ -7,7 +7,8 @@ import { colorArr } from "../../utils/constants";
 import { Close } from "@material-ui/icons";
 const Container = styled.div`
   width: 300px;
-  height: 300px;
+  height: 200px;
+
   background: rgb(255, 255, 255);
   position: absolute;
   z-index: 70;
@@ -20,6 +21,8 @@ const Container = styled.div`
   align-items: center;
   border-radius: 3px;
   color: #5e6c84 !important;
+  overflow-y:scroll;
+  overflow-x:hidden;
   .invite-heading {
     color: #5e6c84;
     font-size: 1.2rem;
@@ -46,16 +49,19 @@ const Container = styled.div`
   .users {
     display: flex;
     flex-direction: column;
-    background: red;
+
     width: 100%;
   }
   .user {
     display: flex;
-    justify-content: space-around;
-    background: yellow;
+    justify-content: space-between;
+    
     padding: 10px;
     align-items: center;
     cursor: pointer;
+    &:hover{
+      background:#999999;
+    }
   }
 `;
 const Line = styled.div`

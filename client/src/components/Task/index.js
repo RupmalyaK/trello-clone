@@ -46,11 +46,12 @@ const Task = ({ name, _id, users, index, colorIndex, description }) => {
       return;
     }
     const taskUsers = boardUsers(users);
-    let UserIconComponents = taskUsers.map((user) => (
+    let UserIconComponents = taskUsers.map((user,index) => (
       <UserIconContainer
         className="mr-3"
         backgroundColor={colorArr[user.colorIndex]}
         userName={user.userName}
+        key={index}
       >
         {user.shortName.toUpperCase()}
       </UserIconContainer>

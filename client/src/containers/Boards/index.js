@@ -55,7 +55,7 @@ const Boards = (props) => {
     }
     const starredBoards = boards.filter((board) => board.starred);
     const BoardComponents = starredBoards.map(
-      ({ name, colorIndex, users, _id, starred }) => (
+      ({ name, colorIndex, users, _id, starred },index) => (
         <BoardBox
           name={name}
           starred={starred}
@@ -63,6 +63,7 @@ const Boards = (props) => {
           id={_id}
           users={users}
           className="mr-4"
+          key={index}
         />
       )
     );
@@ -75,7 +76,7 @@ const Boards = (props) => {
     }
     const nonStarredBoards = boards.filter((board) => !board.starred);
     const BoardComponents = nonStarredBoards.map(
-      ({ name, colorIndex, users, _id, starred }) => (
+      ({ name, colorIndex, users, _id, starred },index) => (
         <BoardBox
           name={name}
           starred={starred}
@@ -83,6 +84,7 @@ const Boards = (props) => {
           id={_id}
           users={users}
           className="mr-4"
+          key={index}
         />
       )
     );

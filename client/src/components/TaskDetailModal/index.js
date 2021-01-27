@@ -196,9 +196,10 @@ const TaskDetail = ({ onHide, ...props }) => {
 
   const showUsers = () => {
     const shortNamedUsers = boardUsers(users);
-    const UserIconComponenets = shortNamedUsers.map((user) => (
+    const UserIconComponenets = shortNamedUsers.map((user,index) => (
       <UserIconContainer
         backgroundColor={colorArr[user.colorIndex]}
+        key={index}
         userName={user.userName}
         className="mr-3"
       >
@@ -219,8 +220,9 @@ const TaskDetail = ({ onHide, ...props }) => {
       currentBoard.users.filter((user) => !map[user._id])
     );
 
-    const UserComponenets = filteredUsers.map((user) => (
+    const UserComponenets = filteredUsers.map((user,index) => (
       <UserIconContainer
+        key={index}
         onClick={(e) =>{
           dispatch(
             addTaskUser({

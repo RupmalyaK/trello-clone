@@ -91,6 +91,7 @@ const Container = styled.div`
 
     .category {
       width: 25%;
+      min-width:300px;
       background: ${({ theme, isDraggingOver }) =>
         !isDraggingOver ? theme.background["board-category"] : "orange"};
       position: relative;
@@ -170,12 +171,13 @@ const Board = (props) => {
    if (!currentBoard) {
       return;
     }
-    const UserComponenets = boardUsers(currentBoard.users).map((user) => (
+    const UserComponenets = boardUsers(currentBoard.users).map((user,index) => (
       <UserIconContainer
         backgroundColor={colorArr[user.colorIndex]}
         className="ml-3"
         userName={user.userName}
         style={{border:"5px solid black",padding:"10px",width:"55px",height:"auto"}}
+        key={index}
       >
         {user.shortName}
     </UserIconContainer>
@@ -200,7 +202,7 @@ const Board = (props) => {
       toBeReviewedTasks,
       finishedTasks,
     };
-    ///sdas
+   
     const task = tasks[sourceCategory].splice(sourceIndex, sourceIndex + 1);
     tasks[destinationCategory].splice(destinationIndex, 0, task[0]);
     dispatch(setTasks(tasks));
@@ -260,7 +262,7 @@ const Board = (props) => {
   };
   const showTasks = (tasks) => {
     const TaskComponents = tasks.map((task, index) => (
-      <Task index={index} {...task} />
+      <Task index={index} {...task} key={index} />
     ));
     return TaskComponents;
   };
@@ -270,7 +272,7 @@ const Board = (props) => {
       {
         return;
       }
-    const CategoryComponents = categoryIndex.map((category) => {
+    const CategoryComponents = categoryIndex.map((category,index) => {
       switch (categories[category]) {
         case "toDo":
           return (
@@ -278,11 +280,13 @@ const Board = (props) => {
               droppableId="toDoTasks"
               type="category"
               style={{ position: "relative" }}
+              key={index}
+              
             >
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  isDraggingOver={snapshot.isDraggingOver}
+                  key={index}
                   {...provided.droppableProps}
                   className="category mr-4"
                 >
@@ -319,11 +323,11 @@ const Board = (props) => {
           );
         case "inDevelopment":
           return (
-            <Droppable droppableId="inDevelopmentTasks" type="category">
+            <Droppable key={index} droppableId="inDevelopmentTasks" type="category">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  isDraggingOver={snapshot.isDraggingOver}
+                  key={index}
                   {...provided.droppableProps}
                   className="category mr-4"
                 >
@@ -361,11 +365,11 @@ const Board = (props) => {
           );
         case "toBeReviewed":
           return (
-            <Droppable droppableId="toBeReviewedTasks" type="category">
+            <Droppable key={index} droppableId="toBeReviewedTasks" type="category">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  isDraggingOver={snapshot.isDraggingOver}
+                  key={index}
                   {...provided.droppableProps}
                   className="category mr-4"
                 >
@@ -402,11 +406,11 @@ const Board = (props) => {
           );
         case "finished":
           return (
-            <Droppable droppableId="finishedTasks" type="category">
+            <Droppable key={index} droppableId="finishedTasks" type="category">
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
-                  isDraggingOver={snapshot.isDraggingOver}
+                  key={index}
                   {...provided.droppableProps}
                   className="category mr-4"
                 >
