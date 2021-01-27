@@ -25,6 +25,7 @@ import Invite from "../../components/Invite";
 import { boardUsers } from "../../utils/func.js";
 import { useHistory } from "react-router-dom";
 import LoadingScreen from "../../components/LoadingScreen";
+import UserIconContainer from "../../components/UserIcon";
 const Container = styled.div`
   width: 100vw;
   min-height: 100vh;
@@ -103,35 +104,6 @@ const Container = styled.div`
   }
 `;
 
-const UserIconContainer = styled.div`
-  background: ${(props) => props.backgroundColor};
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  color: ${(props) => props.theme.text["board-box"]};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  cursor: default;
-  &:hover {
-    &::before {
-      content: "${(props) => props.userName}";
-      position: absolute;
-      display: block;
-      height: 22px;
-      left: 50%;
-      top: 50%;
-      font-size: 1rem;
-      color: black;
-      padding: 2px;
-      background: white;
-      border-radius: 3px;
-      box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
-        0 0 0 1px rgba(9, 30, 66, 0.08);
-    }
-  }
-`;
 
 const Board = (props) => {
   const { boardid } = useParams();
@@ -195,7 +167,7 @@ const Board = (props) => {
       return <LoadingScreen />
     }  
   const showUsers = () => {
-    if (!currentBoard) {
+   if (!currentBoard) {
       return;
     }
     const UserComponenets = boardUsers(currentBoard.users).map((user) => (
@@ -205,9 +177,9 @@ const Board = (props) => {
         userName={user.userName}
       >
         {user.shortName}
-      </UserIconContainer>
+    </UserIconContainer>
     ));
-    return UserComponenets;
+    return UserComponenets; 
   };
   const moveActualTasks = (
     sourceCategory,

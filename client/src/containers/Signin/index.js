@@ -105,7 +105,7 @@ const SignIn = () => {
           Sign In
         </Button>
         <Line className="mb-5" />
-        <span className="login-text">
+        <span className="login-text" onClick={e => history.push("/signup")}>
           Don't have an Account? Sign up.
         </span>
       </SignInBox>

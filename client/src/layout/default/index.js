@@ -9,17 +9,24 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {ThemeProvider} from "styled-components";
 import {lightTheme,darkTheme} from "../../utils/theme.js";
+import {useLocation} from "react-router-dom";
 const Layout = (props) => {
   const { email, id } = useSelector((state) => state.user);
   const history = useHistory();
   const currentTheme = useSelector(state => state.system.currentTheme);
   const theme = currentTheme === "light" ? lightTheme : darkTheme;
-  
+  const location = useLocation();
   useEffect(() => {
+   
     if(!id)
       {
-        history.push("/signin");
-        return;
+        switch(location.pathname)
+          {
+            case "/signin":return;
+            case "/signup":return;
+            default:
+              history.push("/signin");
+          }
       }
    
   },[])

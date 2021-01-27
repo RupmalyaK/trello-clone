@@ -1,12 +1,13 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { colorArr } from "../../utils/constants";
 import { Description as DescriptionIcon } from "@material-ui/icons/";
 import { Draggable } from "react-beautiful-dnd";
 import { boardUsers } from "../../utils/func.js";
 import TaskDetailModal from "../TaskDetailModal";
-import {useDispatch} from "react-redux";
-import {setCurrentTask} from "../../store/actions/boardAction.js";
+import { useDispatch } from "react-redux";
+import { setCurrentTask } from "../../store/actions/boardAction.js";
+import UserIconContainer from "../UserIcon";
 const Container = styled.div`
   width: 100%;
   height: 150px;
@@ -18,7 +19,7 @@ const Container = styled.div`
   justify-content: space-between;
   border-radius: 3px;
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
-  cursor:pointer;
+  cursor: pointer;
   .users {
     display: flex;
 
@@ -36,35 +37,36 @@ const ColorIcon = styled.div`
   border-radius: 10%;
   border: 1px solid ${(props) => props.backgroundColor};
 `;
-const UserIconContainer = styled.div`
-  background: ${(props) => props.backgroundColor};
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  color: ${(props) => props.theme.text["board-box"]};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
-const Task = ({ name,_id, users,index, colorIndex, description }) => {
-  const [isShowingTask,setIsShowingTask] = useState(false);
+const Task = ({ name, _id, users, index, colorIndex, description }) => {
+  const [isShowingTask, setIsShowingTask] = useState(false);
   const dispatch = useDispatch();
   const showUsers = (users) => {
     if (!users) {
       return;
     }
     const taskUsers = boardUsers(users);
-    const UserIconComponents = taskUsers.map((user) => (
-      <UserIconContainer backgroundColor={colorArr[user.colorIndex]}>
+    let UserIconComponents = taskUsers.map((user) => (
+      <UserIconContainer
+        className="mr-3"
+        backgroundColor={colorArr[user.colorIndex]}
+        userName={user.userName}
+      >
         {user.shortName.toUpperCase()}
       </UserIconContainer>
     ));
-    return UserIconComponents;
+    if (UserIconComponents.length > 3) {
+      UserIconComponents = UserIconComponents.slice(0, 3);
+    }
+
+    return <>{UserIconComponents} {UserIconComponents.length > 3 && <span>{UserIconComponents.length-3} more users..</span>} </>;
   };
   return (
-       <>
-       <TaskDetailModal show={isShowingTask} onHide={() => setIsShowingTask(false)} />
+    <>
+      <TaskDetailModal
+        show={isShowingTask}
+        onHide={() => setIsShowingTask(false)}
+      />
       <Draggable draggableId={_id} index={index} key={_id}>
         {(provided, snapshot) => (
           <div
@@ -72,25 +74,27 @@ const Task = ({ name,_id, users,index, colorIndex, description }) => {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             className="mb-3"
-            onClick={e => {
-              dispatch(setCurrentTask({name,_id,colorIndex,description,users}));
+            onClick={(e) => {
+              dispatch(
+                setCurrentTask({ name, _id, colorIndex, description, users })
+              );
               setIsShowingTask(true);
             }}
           >
-
             <Container>
-       {colorIndex !== -1 &&     <ColorIcon backgroundColor={colorArr[colorIndex]} />}
-            <span className="name">{name}</span>
-            <div className="description-icon-container">
-              <DescriptionIcon />
-            </div>
-            <div className="users">{showUsers(users)}</div>
+              {colorIndex !== -1 && (
+                <ColorIcon backgroundColor={colorArr[colorIndex]} />
+              )}
+              <span className="name">{name}</span>
+              <div className="description-icon-container">
+                <DescriptionIcon />
+              </div>
+              <div className="users">{showUsers(users)}</div>
             </Container>
-         
           </div>
         )}
       </Draggable>
-      </>    
+    </>
   );
 };
 

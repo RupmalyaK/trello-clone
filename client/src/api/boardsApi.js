@@ -36,6 +36,9 @@ export const addUserToBoard = (data) => {
 export const deleteTaskById = (data) => {
   return DeleteRequest("/tasks", data);
 };
+export const addUserToTask = (data) => {
+  return PutRequest("/tasks/task/adduser", data);
+}
 const GetRequest = (url) => {
   return new Promise(function (resolve, reject) {
     const obj = {

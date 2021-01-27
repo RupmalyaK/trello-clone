@@ -9,6 +9,7 @@ import { motion, useAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { updateBoard } from "../../store/actions/boardAction.js";
 import { useHistory } from "react-router-dom";
+import UserIconContainer from "../UserIcon";
 const Container = styled.div`
   width: 300px;
   height: 150px;
@@ -51,16 +52,6 @@ const Container = styled.div`
   }
 `;
 
-const UserIconContainer = styled.div`
-  background: ${(props) => props.backgroundColor};
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  color: ${(props) => props.theme.text["board-box"]};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 
 const StarContainer = styled(motion.div)`
   position: absolute;
@@ -93,6 +84,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
         <UserIconContainer
           backgroundColor={colorArr[users[i].colorIndex]}
           className="ml-3"
+          userName={users[i].userName}
         >
           {users[i].shortName}
         </UserIconContainer>

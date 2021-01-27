@@ -8,7 +8,8 @@ import {
   updateTaskById,
   getTaskById,
   deleteTaskById,
-  addUserToBoard
+  addUserToBoard,
+  addUserToTask
 } from "../../api/boardsApi.js";
 import { boardUsers } from "../../utils/func.js";
 
@@ -172,8 +173,28 @@ export const setCurrentTask = (task) => {
 
 export const addUserBoard = ({boardId,userId,otherUserId}) => {
   return async dispatch => {
+    try{
     await addUserToBoard({boardId,userId,otherUserId});
-    dispatch(getCurrentBoard(boardId,true));
+    dispatch(getCurrentBoard(boardId,true)); }
+    catch(err)
+      {
+        console.log(err);
+      }
+  }
+
+}
+export const addTaskUser  = ({boardId,userId,otherUserId,taskId}) => {
+  return async dispatch => {
+    try{
+        await addUserToTask({boardId,userId,otherUserId,taskId});
+        const task = await getTaskById({boardId,userId,taskId});
+        dispatch(createAction(actionTypes.SET_CURRENT_TASK,task));
+        dispatch(getCurrentBoard(boardId));
+      }
+    catch(err)
+      {
+        console.log(err);
+      }
   }
 }
 export const setTasks = (tasks) => {

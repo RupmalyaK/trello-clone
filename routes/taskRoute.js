@@ -4,6 +4,7 @@ import { Router } from "express";
 import { isAuthenticated } from "../controller/authController.js";
 import { isUserinBoard } from "../controller/boardController.js";
 
+
 const router = Router();
 
 router.post("/", isAuthenticated, async (req, res, next) => {
@@ -140,5 +141,53 @@ if(!flag)
       next();
     }
 });
+
+router.put("/task/adduser",isAuthenticated,async(req, res, next) => {
+  const { userId, boardId,taskId,otherUserId } = req.body;
+
+  try{
+  const board = await BoardModel.findById(boardId);
+    let flags = [false,false];
+    board.users.forEach((user) => {
+      if (user._id.toString() === userId) {
+        flags[0] = true;
+        return;
+      }
+      if(otherUserId === user._id.toString())
+        {
+          flags[1] = true;
+          return;
+        }
+    });
+    if(!flags[0] || !flags[1] )
+      {
+        throw new Error("user not present in board");
+      }
+      const task = await TaskModel.findById(taskId);
+      let flag = false;
+      task.users.forEach(user => {
+        if(user._id.toString() === otherUserId)
+          {
+           
+            flag = true;
+            return;
+          }
+      });
+      if(flag)
+        {
+          throw new Error("User already in task");
+        }
+
+        task.users.push(otherUserId);
+        await task.save();
+        res.status(200).json({"operation":"success"});
+  }catch(err)
+    {
+      console.log(err);
+      res.status(500);
+      res.error = err;
+      next();
+    }
+})
 
 export default router;

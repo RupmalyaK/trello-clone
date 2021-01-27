@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,10 +11,16 @@ import {
   Delete as DeleteIcon,
   Send as SendIcon,
   Close as CloseIcon,
+  Add as AddIcon,
 } from "@material-ui/icons";
-import { updateTask, deleteTask } from "../../store/actions/boardAction.js";
+import {
+  updateTask,
+  deleteTask,
+  addTaskUser,
+} from "../../store/actions/boardAction.js";
 import Swal from "sweetalert2";
 import Button from "../Button";
+import UserIconContainer from "../UserIcon";
 const Container = styled(Modal)`
   .modal-body {
     display: flex;
@@ -28,6 +34,7 @@ const Container = styled(Modal)`
     background:#f4f5f7;
 
   }
+ 
   .tdm-header{
     background:${(props) => props.backgroundColor};
     display:flex;
@@ -47,10 +54,17 @@ const Container = styled(Modal)`
     flex-direction: column;
     padding:10px;
     height:200px;
-  }
+    
+  };
   .user-icons {
     display: flex;
     padding: 5px;
+    .add-user-icon{
+      color:#212529;
+      &:hover{
+        color:#636669;
+      }
+    };
   }
   .description{
     padding:10px;
@@ -86,6 +100,7 @@ const Container = styled(Modal)`
   .description{
     display:flex;
     flex-direction:column;
+    z-index:0;
   }
   .description-heading{
 
@@ -113,17 +128,22 @@ const Container = styled(Modal)`
     width:auto !important;
     margin-top:10px;
   }
-`;
-
-const UserIconContainer = styled.div`
-  background: ${(props) => props.backgroundColor};
-  height: 30px;
-  width: 30px;
-  border-radius: 50%;
-  color: ${(props) => props.theme.text["board-box"]};
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  z-index:1040;
+  .add-user-icon-container{
+    position:relative;
+    
+    
+  }
+  .add-task-user{
+    position:absolute;
+    width:200px;
+    height:120px;
+    box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
+    0 0 0 1px rgba(9, 30, 66, 0.08);
+    display:flex;
+    padding:5px;
+   
+  }
 `;
 
 //{name,description,users,colorIndex}
@@ -134,8 +154,10 @@ const TaskDetail = ({ onHide, ...props }) => {
   const currentTask = useSelector((state) => state.boards.currentTask);
   const { currentBoard } = useSelector((state) => state.boards);
   const { id: userId } = useSelector((state) => state.user);
+  const [isShowingAddUser, setIsShowingAddUser] = useState(false);
   const nameInputRef = useRef(null);
   const descInputRef = useRef(null);
+  const adduserRef = useRef(null);
   const [descInput, setDescInput] = useState(
     currentTask ? currentTask.description : ""
   );
@@ -145,27 +167,82 @@ const TaskDetail = ({ onHide, ...props }) => {
   );
 
   useEffect(() => {
+    const handleMouseDown = e => {
+      if(adduserRef.current && adduserRef.current.contains(e.target))
+      {
+        return;
+      }
+      setIsShowingAddUser(false);
+    }
+    
+    document.addEventListener("mousedown",handleMouseDown)
+    return () => {
+      document.removeEventListener("mousedown",handleMouseDown);
+    }
+  }, [])
+  useEffect(() => {
     if (currentTask) {
       setNameInput(currentTask.name);
       setDescInput(currentTask.description);
     }
   }, [currentTask]);
 
-  useEffect(() =>{
+  useEffect(() => {
     updatingName && nameInputRef.current && nameInputRef.current.focus();
     updatingDesc && descInputRef.current && descInputRef.current.focus();
-  },[updatingName,updatingDesc])
+  }, [updatingName, updatingDesc]);
 
   const { name, description, users, colorIndex, _id } = currentTask || {};
+
   const showUsers = () => {
     const shortNamedUsers = boardUsers(users);
-
     const UserIconComponenets = shortNamedUsers.map((user) => (
-      <UserIconContainer backgroundColor={colorArr[user.colorIndex]}>
+      <UserIconContainer
+        backgroundColor={colorArr[user.colorIndex]}
+        userName={user.userName}
+        className="mr-3"
+      >
         {user.shortName.toUpperCase()}
       </UserIconContainer>
     ));
     return UserIconComponenets;
+  };
+
+  const showUserNotInTask = () => {
+    const { users,_id } = currentTask || {};
+    if (!users) {
+      return;
+    }
+    const map = {};
+    users.forEach((user) => (map[user._id] = true));
+    const filteredUsers = boardUsers(
+      currentBoard.users.filter((user) => !map[user._id])
+    );
+
+    const UserComponenets = filteredUsers.map((user) => (
+      <UserIconContainer
+        onClick={(e) =>{
+          dispatch(
+            addTaskUser({
+              boardId: currentBoard._id,
+              userId,
+              otherUserId: user._id,
+              taskId:_id
+            })
+          )
+          setIsShowingAddUser(false);
+        }
+  
+        }
+        className="mr-3"
+        backgroundColor={colorArr[user.colorIndex]}
+        userName={user.userName}
+        style={{ cursor: "pointer" }}
+      >
+        {user.shortName.charAt(0).toUpperCase()}
+      </UserIconContainer>
+    ));
+    return UserComponenets;
   };
 
   return (
@@ -225,33 +302,54 @@ const TaskDetail = ({ onHide, ...props }) => {
           >
             {updatingName ? <CloseIcon /> : <EditIcon />}
           </Icon>
-          <Icon  onClick={async (e) => {
-                const result = await Swal.fire({
-                  title: "Are you sure?",
-                  text: "You won't be able to revert this!",
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: "#3085d6",
-                  cancelButtonColor: "#d33",
-                  confirmButtonText: "Yes, delete it!",
-                });
-                if (!result.isConfirmed) {
-                  return;
-                }
+          <Icon
+            onClick={async (e) => {
+              const result = await Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!",
+              });
+              if (!result.isConfirmed) {
+                return;
+              }
 
-                dispatch(
-                  deleteTask({ taskId: _id, boardId: currentBoard._id, userId })
-                );
-                onHide();
-              }}>
-            <DeleteIcon
-             
-            />
+              dispatch(
+                deleteTask({ taskId: _id, boardId: currentBoard._id, userId })
+              );
+              onHide();
+            }}
+          >
+            <DeleteIcon />
           </Icon>
         </div>
         <div className="members">
           <div className="members-heading">Members</div>
-          <div className="user-icons">{showUsers()}</div>
+          <div className="user-icons">
+            {showUsers()}
+            <div className="add-user-icon-container">
+              <AddIcon
+                className="add-user-icon ml-3"
+                style={{ fontSize: "2rem", cursor: "pointer" }}
+                onClick={e => setIsShowingAddUser(true)}
+              />
+          {isShowingAddUser &&    <div className="add-task-user" ref={adduserRef}>
+                {showUserNotInTask()}
+                <CloseIcon
+                onClick={e => setIsShowingAddUser(false)}
+                  style={{
+                    cursor: "pointer",
+                    position: "absolute",
+                    top: "5%",
+                    right: "2%",
+                  }}
+                />
+              </div>}
+            </div>
+          </div>
         </div>
         <div className="description">
           <span className="description-heading">

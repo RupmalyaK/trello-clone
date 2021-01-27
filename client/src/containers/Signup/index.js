@@ -6,7 +6,7 @@ import PasswordStrengthBar from "react-password-strength-bar";
 import Button from "../../components/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpAsync as signUp,clearSignUpErrors } from "../../store/actions/userAction.js";
-
+import {useHistory} from "react-router-dom";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -62,14 +62,20 @@ const Signup = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [confirmPasswordError,setConfirmPasswordError] = useState("");
   const dispatch = useDispatch();
-  const signUpErrors = useSelector(
-    (state) => state.user.signUpErrors
+  const history = useHistory();
+  const {signUpErrors,id} = useSelector(
+    (state) => state.user
   );
-
-  const { displayNameErrors, emailErrors, passwordErrors } = signUpErrors || {};
   useEffect(() => {
     dispatch(clearSignUpErrors());
   },[]);
+  
+  if(id)
+    {
+      history.push("/boards");
+      return<></>
+    }
+  const { displayNameErrors, emailErrors, passwordErrors } = signUpErrors || {};
 
   const handleSignUp = () => {
     if(confirmPassword !== password)
@@ -140,7 +146,7 @@ const Signup = () => {
           Sign Up
         </Button>
         <Line className="mb-5" />
-        <span className="login-text">
+        <span className="login-text" onClick={e => history.push("/signin")}>
           Already have an Atlassian account? Log in
         </span>
       </SignUpBox>
