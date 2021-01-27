@@ -83,7 +83,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
       UserIconComponenets.push(
         <UserIconContainer
           backgroundColor={colorArr[users[i].colorIndex]}
-          className="ml-3"
+          className="mr-3"
           userName={users[i].userName}
         >
           {users[i].shortName}
@@ -100,6 +100,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
       onMouseLeave={(e) => starHide()}
       {...otherProps}
       onClick={(e) => history.push(`/${id}/dashboard`)}
+    
     >
       <StarContainer initial={{ x: 50 }} animate={starController}>
         {starred ? (

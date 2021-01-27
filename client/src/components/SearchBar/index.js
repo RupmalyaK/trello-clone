@@ -2,7 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { motion, useAnimation } from "framer-motion";
 import { Search as Search, Close as Close } from "@material-ui/icons";
-
+import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
+import {colorArr} from "../../utils/constants.js";
 const Container = styled(motion.div)`
   background: ${({ theme, isActive }) =>
     isActive
@@ -23,6 +25,30 @@ const Container = styled(motion.div)`
         ? theme.background["searchBar-wide"]
         : theme.background["searchBar-small-hover"]};
   }
+  border-radius:3px;
+  position: relative;
+  .result-container {
+    width: 100%;
+    min-height: 200px;
+    background: #fff;
+    position: absolute;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
+      0 0 0 1px rgba(9, 30, 66, 0.08);
+  }
+  .result {
+    height: 50px;
+    cursor: pointer;
+    display:flex;
+    justify-content:space-between;
+    padding:10px;
+    &:hover{
+      background:#999999;
+    }
+  }
+  
 `;
 
 const SearchInput = styled.input`
@@ -47,11 +73,21 @@ const CloseIcon = styled(Close)`
   top: 23%;
 `;
 
+const ColorBox = styled.div`
+height:20px;
+width:50px;
+background:${props => props.backgroundColor};
+border-radius:10%;
+`;
 const SearchBar = () => {
   const [isActive, setIsActive] = useState(false);
   const searchBarController = useAnimation();
+  const { boards } = useSelector((state) => state.boards);
   const inputRef = useRef(null);
-
+  const searchBarRef = useRef(null);
+  const [searchString, setSearchString] = useState("");
+  const [isShowingResults, setIsShowingResults] = useState(false);
+  const history = useHistory();
   useEffect(() => {
     if (isActive) {
       widenSearchBar();
@@ -60,6 +96,58 @@ const SearchBar = () => {
     shrinkSearchBar();
   }, [isActive]);
 
+  useEffect(() => {
+    const handleMouseDown = (e) => {
+      if (
+        searchBarRef.current &&
+        !searchBarRef.current.contains(e.target)
+      ) {
+        setIsActive(false);
+        setIsShowingResults(false);
+       
+      }
+    };
+    document.addEventListener("mousedown", handleMouseDown);
+    const handleUnmount = () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
+    return handleUnmount;
+  }, []);
+  const handleChange = (e) => {
+    setSearchString(e.target.value);
+  };
+
+  const showResult = () => {
+    if (!searchString) {
+      return <></>;
+    }
+    let filteredBoards = boards.filter((board) =>
+      board.name.match(new RegExp(searchString, "i"))
+    );
+    const startsWith = [];
+    const notStartWith = [];
+    filteredBoards.forEach((board) => {
+      if (board.name.match(new RegExp(`^${searchString}`, "i"))) {
+        startsWith.push(board);
+        return;
+      }
+      notStartWith.push(board);
+    });
+    filteredBoards = [...startsWith, ...notStartWith];
+    const BoardComponents = filteredBoards.map((board) => {
+      return (
+        <div className="result" onClick={e => {
+          history.push(`/${board._id}/dashboard`);
+          setIsShowingResults(false);
+          setIsActive(false);
+        }}>
+          <ColorBox backgroundColor={colorArr[board.colorIndex]}/>
+          <div className="name">{board.name}</div>
+        </div>
+      );
+    });
+    return BoardComponents ;
+  };
   const widenSearchBar = () => {
     searchBarController.start({ width: "300px", transform: { duration: 1 } });
   };
@@ -72,19 +160,31 @@ const SearchBar = () => {
       initial={{ width: "184px" }}
       animate={searchBarController}
       isActive={isActive}
+      ref={searchBarRef}
     >
       <SearchInput
-        onFocus={(e) => setIsActive(true)}
-        onBlur={(e) => setIsActive(false)}
+        onFocus={(e) => {
+          setIsActive(true);
+          setIsShowingResults(true);
+        }}
+       
         ref={inputRef}
+        value={searchString}
+        onChange={handleChange}
       />
 
       {isActive ? (
-        <CloseIcon />
+        <CloseIcon onClick={e => {
+          setIsActive(false);
+          setIsShowingResults(false);
+        }}/>
       ) : (
         <SearchIcon
           onClick={(e) => inputRef.current && inputRef.current.focus()}
         />
+      )}
+      {isShowingResults && searchString && (
+        <div className="result-container">{showResult()}</div>
       )}
     </Container>
   );
