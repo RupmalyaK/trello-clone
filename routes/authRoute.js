@@ -89,10 +89,7 @@ router.post("/signin", async (req, res, next) => {
   }
 });
 
-router.get("/", async (req, res) => {
-  const users = await UserModel.find({});
-  res.status(200).json(users);
-});
+
 
 export default router;
 

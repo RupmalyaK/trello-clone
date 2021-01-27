@@ -38,49 +38,7 @@ router.get("/search/:searchString",/* isAuthenticated,*/ async (req, res, next) 
 
 
 
-router.put("/updateuser/:userId",isAuthenticated,
-  async (req, res, next) => {
-    const { displayName, status,socketId, removeProfileImage } = req.body;
-    try {
-      const user = await UserModel.findById(mongoose.Types.ObjectId(req.params.userId))
-        .populate({
-          path: "chatRooms",
-          model: "chatRoom",
-          populate: {
-            path: "users",
-            model: "user",
-          },
-        })
-        .exec();
-      if (!user) {
-        throw new Error("No user exist with this id");
-      }
-      user.displayName = displayName || user.displayName;
-      user.status = status || user.status;
-      await user.save();
-      res.status(200).json(user);
-    } catch (err) {
-    //  console.log(err);
-      next(err);
-    }
-  }
-);
-router.get("/getidbyemail/:email", async (req,res,next) => {
-  console.log(req.params.email);
-  try{
-      const user = await UserModel.findOne({email:req.params.email}); 
-      if(!user)
-        {
-          throw new Error("No user exist with this email"); 
-        }
-       res.status(200).json({userId:user._id}); 
-     }
-  catch(err)
-    {
-      console.log(err);
-      next(err);
-    }
-});
+
 
 
 

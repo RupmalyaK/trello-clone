@@ -1,0 +1,35 @@
+Authentication
+"/api/auth/signup" METHOD=POST
+Desc:To create an account.
+"/api/auth/signin" METHOD=POST
+Desc:To log in to an existing account.
+
+Boards
+/api/boards METHOD=POST
+Desc:To Create a board.
+/api/boards/:userid METHOID=GET
+Desc:To get all the boards the user is subscribed to.
+/api/boards/getboard METHOD=GET
+Desc:To Get a board by id out of the subscribed boards.
+/api/boards/board METHOD=PUT
+Desc:To update a board.
+/api/boards/adduser METHOD=PUT
+Desc:To add an user in a board.
+
+Tasks
+/api/tasks METHOD=POST
+Desc:To create a task in a board in a particular category.
+/api/tasks METHOD=PUT
+Desc:To modify a task.
+/api/tasks METHOD=DELETE
+Desc:To Delete a task.
+/api/tasks/task METHOD=GET
+Desc:To get a a particular task by id.
+/api/tasks/task/adduser METHOD=PUT
+Desc:To add an user to a task.
+
+User
+/api/users/search/:searchString METHOD=GET
+Desc:To Search a user by username
+
+
