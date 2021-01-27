@@ -7,7 +7,7 @@ export default function LoadingScreen() {
     <div className="loading--screen">
       <div className="loader">
         <div className="loader__figure"></div>
-        <p className="loader__label">Tathagat</p>
+        <p className="loader__label"></p>
       </div>
     </div>
   );

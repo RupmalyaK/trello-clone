@@ -49,7 +49,9 @@ export const updateBoard = (
   id,
   { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex }
 ) => {
-  return async (dispatch) => {
+  return async (dispatch,getState) => {
+    const {id:userId} = getState().user;
+  
     dispatch(createAction(actionTypes.SET_IS_LOADING));
     try {
       await updateBoardById(id, {
@@ -59,6 +61,7 @@ export const updateBoard = (
         starred,
         categoryIndex,
         isChangingStar,
+        userId
       });
       dispatch(getAllBoards(userId));
     } catch (err) {
@@ -67,15 +70,17 @@ export const updateBoard = (
   };
 };
 
-export const getCurrentBoard = (id,setIsLoading) => {
-  return async (dispatch) => {
+export const getCurrentBoard = ({boardId},setIsLoading) => {
+ 
+  return async (dispatch,getState) => {
+    const {id:userId} = getState().user ;
     if(setIsLoading)
       {
         dispatch(createAction(actionTypes.SET_IS_LOADING));
       }
     
     try {
-      const board = await getBoardById(id);
+      const board = await getBoardById({boardId,userId});
       dispatch(createAction(actionTypes.SET_CURRENT_BOARD, board));
     } catch (err) {
       console.log(err);
@@ -87,8 +92,8 @@ export const updateAndGetBoard = (
   id,
   { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex },setIsLoading
 ) => {
-  return async (dispatch) => {
-
+  return async (dispatch,getState) => {
+    const {id:userId} = getState().user;
     try {
       await updateBoardById(id, {
         name,
@@ -97,8 +102,9 @@ export const updateAndGetBoard = (
         starred,
         categoryIndex,
         isChangingStar,
+        userId,
       });
-      dispatch(getCurrentBoard(id,setIsLoading));
+      dispatch(getCurrentBoard({boardId:id},setIsLoading));
     } catch (err) {
       console.log(err);
     }
@@ -123,7 +129,7 @@ export const createTask = ({
         colorIndex,
         category,
       });
-      dispatch(getCurrentBoard(boardId));
+      dispatch(getCurrentBoard({boardId:boardId},true));
     } catch (err) {
       console.log(err);
     }
@@ -142,7 +148,7 @@ export const updateTask = ({
   return async dispatch => {
     try{
       await updateTaskById({taskId,name,description,colorIndex,newUserId,userId,boardId});
-      dispatch(getCurrentBoard(boardId));
+      dispatch(getCurrentBoard({boardId:boardId}));
       const task = await getTaskById({boardId,userId,taskId});
       dispatch(createAction(actionTypes.SET_CURRENT_TASK,task))
     }
@@ -160,7 +166,7 @@ export const deleteTask = ({boardId,userId,taskId}) => {
     try{
       await deleteTaskById({boardId,userId,taskId});
       dispatch(setCurrentTask(null));
-      dispatch(getCurrentBoard(boardId));
+      dispatch(getCurrentBoard({boardId:boardId}));
     }
   catch(err)
       {
@@ -175,7 +181,7 @@ export const addUserBoard = ({boardId,userId,otherUserId}) => {
   return async dispatch => {
     try{
     await addUserToBoard({boardId,userId,otherUserId});
-    dispatch(getCurrentBoard(boardId,true)); }
+    dispatch(getCurrentBoard({boardId:boardId},true)); }
     catch(err)
       {
         console.log(err);

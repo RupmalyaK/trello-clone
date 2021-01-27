@@ -132,7 +132,7 @@ const Board = (props) => {
   }, [isChangingName]);
 
   useEffect(() => {
-    if (currentBoard) {
+    if (currentBoard && currentBoard.length !== 0) {
       const tasks = {
         toDoTasks: [],
         inDevelopmentTasks: [],
@@ -154,8 +154,8 @@ const Board = (props) => {
   }, [currentBoard]);
 
   useEffect(() => {
-    dispatch(getCurrentBoard(boardid,true));
-  }, []);
+    dispatch(getCurrentBoard({boardId:boardid},true));
+  }, [boardid]);
 
   if(!userId)
     {
@@ -175,6 +175,7 @@ const Board = (props) => {
         backgroundColor={colorArr[user.colorIndex]}
         className="ml-3"
         userName={user.userName}
+        style={{border:"5px solid black",padding:"10px",width:"55px",height:"auto"}}
       >
         {user.shortName}
     </UserIconContainer>
@@ -265,6 +266,10 @@ const Board = (props) => {
   };
 
   const showCategory = (categoryIndex) => {
+    if(!categoryIndex)
+      {
+        return;
+      }
     const CategoryComponents = categoryIndex.map((category) => {
       switch (categories[category]) {
         case "toDo":

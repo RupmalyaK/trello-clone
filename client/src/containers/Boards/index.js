@@ -13,6 +13,7 @@ const Container = styled.div`
     margin-top: 20px;
     display: flex;
     width:100%;
+    flex-wrap:wrap;
    
   }
   .heading{

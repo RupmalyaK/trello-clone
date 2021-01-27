@@ -25,6 +25,7 @@ router.post("/", isAuthenticated, async (req, res, next) => {
 
 router.get("/:userid", isAuthenticated, async (req, res, next) => {
   try {
+    
     const { userid } = req.params;
     const boards = await BoardModel.find({})
       .populate({
@@ -35,7 +36,7 @@ router.get("/:userid", isAuthenticated, async (req, res, next) => {
     const assignedBoards = [];
     boards.forEach((board) => {
       board.users.forEach((user) => {
-        console.log(user._id, userid);
+        
         if (user._id.toString() === userid) {
           assignedBoards.push(board);
         }
@@ -50,10 +51,11 @@ router.get("/:userid", isAuthenticated, async (req, res, next) => {
   }
 });
 
-router.get("/board/:boardid", async (req, res, next) => {
+router.get("/board/getboard", async (req, res, next) => {
   try {
-
-    const { boardid } = req.params;
+    
+    const { boardid,userid } = req.query;
+    
     const board = await BoardModel.findById(boardid)
       .populate({
         path: "users",
@@ -92,6 +94,17 @@ router.get("/board/:boardid", async (req, res, next) => {
         }
       })
       .exec();
+    let flag = false;
+    board.users.forEach(user => {
+      if(user._id.toString() === userid)
+        {
+          flag = true;
+        }
+    })  
+    if(!flag)
+      {
+        throw new Error("User not in board");
+      }
     res.status(200).json(board);
   } catch (err) {
     console.log(err);
@@ -101,9 +114,10 @@ router.get("/board/:boardid", async (req, res, next) => {
   }
 });
 
-router.put("/board/:boardid", async (req, res, next) => {
+router.put("/board",isAuthenticated, isUserinBoard, async (req, res, next) => {
   try {
     const {
+      boardId,
       name,
       colorIndex,
       tasks,
@@ -111,8 +125,14 @@ router.put("/board/:boardid", async (req, res, next) => {
       categoryIndex,
       isChangingStar,
     } = req.body;
-    const { boardid } = req.params;
-    let board = await BoardModel.findById(boardid);
+   
+    if(!req.userPresentInBoard)
+      {
+       
+        throw new Error("User not present in board");
+      }
+   
+    let board = await BoardModel.findById(boardId);
     if (name) {
       board.name = name;
     }

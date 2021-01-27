@@ -9,11 +9,12 @@ export const postBoard = (data) => {
 };
 
 export const updateBoardById = (id, data) => {
-  return PutRequest(`/boards/board/${id}`, data);
+  return PutRequest(`/boards/board/`, {boardId:id,...data});
 };
 
-export const getBoardById = (id) => {
-  return GetRequest(`/boards/board/${id}`);
+export const getBoardById = ({boardId,userId}) => {
+
+  return GetRequest(`/boards/board/getboard?boardid=${boardId}&userid=${userId}`);
 };
 
 export const addTaskInBoard = (data) => {

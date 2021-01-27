@@ -25,6 +25,8 @@ const Container = styled.div`
   overflow: hidden;
   cursor: pointer;
   font-size: 1.2rem;
+  margin-top:20px;
+  min-width:300px;
   border-radius: 5px;
   .heading {
     margin: 10px;

@@ -30,11 +30,14 @@ const Container = styled(motion.div)`
   .result-container {
     width: 100%;
     min-height: 200px;
+    max-height:200px;
     background: #fff;
     position: absolute;
     z-index: 100;
     display: flex;
     flex-direction: column;
+    overflow-x:hidden;
+    overflow-y:scroll;
     box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
       0 0 0 1px rgba(9, 30, 66, 0.08);
   }

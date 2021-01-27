@@ -73,7 +73,7 @@ router.put("/", isAuthenticated, isUserinBoard, async (req, res, next) => {
     const task = await TaskModel.findById(taskId);
 
     if (name) {
-      console.log("this is name", name);
+   
       task.name = name;
     }
     if (description) {
