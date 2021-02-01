@@ -26,13 +26,14 @@ const MainContent = styled.div`
     background: ${(props) => props.backgroundColor};
     padding: 10px;
     border-radius: 3px;
+ 
   }
 `;
 
 const SideContent = styled.div`
   width: 300px;
   height: 220px;
-  background: blue;
+ 
   margin-left: 10px;
   border-radius: 3px;
   background: ${(props) => props.theme.background["cbm-side"]};
@@ -46,7 +47,7 @@ const SideContent = styled.div`
   .side-content {
     display: flex;
     flex-wrap: wrap;
-
+  
     .color-container {
       width: 33%;
       height: 56px;

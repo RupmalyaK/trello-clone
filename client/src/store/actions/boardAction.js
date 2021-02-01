@@ -195,7 +195,7 @@ export const addTaskUser  = ({boardId,userId,otherUserId,taskId}) => {
         await addUserToTask({boardId,userId,otherUserId,taskId});
         const task = await getTaskById({boardId,userId,taskId});
         dispatch(createAction(actionTypes.SET_CURRENT_TASK,task));
-        dispatch(getCurrentBoard(boardId));
+        dispatch(getCurrentBoard({boardId}));
       }
     catch(err)
       {

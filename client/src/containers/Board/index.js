@@ -29,7 +29,7 @@ import UserIconContainer from "../../components/UserIcon";
 const Container = styled.div`
   width: 100vw;
   height:100vh;
-  background: ${(props) => props.backgroundColor};
+  background: ${(props) => props.currentTheme === "light" ? props.backgroundColor : "#1b1b2f"};
   overflow-y:scroll;
   .top-content {
     margin-top: 40px;
@@ -94,6 +94,7 @@ const Container = styled.div`
       min-width:300px;
       background: ${({ theme, isDraggingOver }) =>
         !isDraggingOver ? theme.background["board-category"] : "orange"};
+        color:${props => props.theme.text.category};
       position: relative;
       padding: 30px 30px 50px 30px;
       .category-title {
@@ -123,6 +124,7 @@ const Board = (props) => {
   const boardNameInputRef = useRef(null);
   const [isShowingInvite, setIsShowingInvite] = useState(false);
   const { id: userId } = useSelector((state) => state.user);
+  const {currentTheme} = useSelector(state => state.system);
 
 
   
@@ -470,6 +472,7 @@ const Board = (props) => {
   return (
     <Container
       backgroundColor={currentBoard ? colorArr[currentBoard.colorIndex] : ""}
+      currentTheme={currentTheme}
     >
       <Header />
       <div className="top-content">

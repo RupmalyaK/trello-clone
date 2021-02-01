@@ -12,7 +12,7 @@ const systemReducer = (state = INITIAL_STATE, action) => {
             case actionTypes.SET_CURRENT_THEME:
                     return {...state, currentTheme:payLoad};
             default:
-                return {...state};        
+                return state;        
 
         }
 

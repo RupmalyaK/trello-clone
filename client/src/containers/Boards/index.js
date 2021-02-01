@@ -8,6 +8,8 @@ import {useHistory} from "react-router-dom";
 import LoadingScreen from "../../components/LoadingScreen";
 
 const Container = styled.div`
+  min-height:100vh;
+  background:${props => props.theme.background.boards};
   .content {
     padding: 30px;
     margin-top: 20px;
@@ -17,7 +19,7 @@ const Container = styled.div`
    
   }
   .heading{
-   
+    color:${props => props.theme.text["boards-heading"]};
     display:block;
     text-align:center;
     font-size:2rem;

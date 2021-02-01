@@ -13,7 +13,7 @@ import UserIconContainer from "../UserIcon";
 const Container = styled.div`
   width: 300px;
   height: 150px;
-  background: ${(props) => props.backgroundColor};
+  background: ${(props) => props.themeName === "light" ? props.backgroundColor : "#1f4068" };
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -66,6 +66,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { id: userId } = useSelector((state) => state.user);
+  const {currentTheme} = useSelector(state => state.system);
 
   const starShow = () => {
     starController.start({ x: 0, transition: { duration: 0.5 } });
@@ -103,6 +104,7 @@ const BoardBox = ({ name, colorIndex, users, id, starred, ...otherProps }) => {
       onMouseLeave={(e) => starHide()}
       {...otherProps}
       onClick={(e) => history.push(`/${id}/dashboard`)}
+      themeName={currentTheme}
     
     >
       <StarContainer initial={{ x: 50 }} animate={starController}>

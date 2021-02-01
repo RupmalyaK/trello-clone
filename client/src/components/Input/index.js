@@ -13,6 +13,7 @@ position:relative;
 position:absolute;
 right:3%;
 top:23%;
+
 }
 `
 ;
@@ -26,6 +27,7 @@ background:none;
 padding:10px;
 font-size:1rem;
 border:2px solid ${props => props.theme.border["input-border"]};
+color:${props => props.theme.text.auth};
 &:hover{
   background:${props => props.theme.background["input-hover"]};
 }

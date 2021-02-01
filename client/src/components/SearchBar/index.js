@@ -39,7 +39,8 @@ const Container = styled(motion.div)`
     overflow-x:hidden;
     overflow-y:scroll;
     box-shadow: 0 8px 16px -4px rgba(9, 30, 66, 0.25),
-      0 0 0 1px rgba(9, 30, 66, 0.08);
+    0 0 0 1px rgba(9, 30, 66, 0.08);
+      background:${props => props.theme.background.dropdown};
   }
   .result {
     height: 50px;
@@ -47,6 +48,7 @@ const Container = styled(motion.div)`
     display:flex;
     justify-content:space-between;
     padding:10px;
+    color:${props => props.theme.text["searchBar-result"]};
     &:hover{
       background:#999999;
     }

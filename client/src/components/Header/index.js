@@ -9,6 +9,7 @@ import { colorArr } from "../../utils/constants.js";
 import { useHistory } from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {signOut} from "../../store/actions/userAction.js";
+import Toggle from "../Toggle";
 import Icon from "../Icon";
 const Container = styled.div`
   position: fixed;
@@ -21,11 +22,16 @@ const Container = styled.div`
   padding-top:3px;
   z-index:100;
   padding-bottom:2px;
+  .toggle-container{
+    flex:1;
+    background:red;
+    display:flex;
+    justify-content:center;
+  }
   .search-container{
     flex:1;
     display:flex;
-    justify-content:center;
-
+    justify-content:flex-start;
     align-items:center;
 
    
@@ -117,7 +123,9 @@ const Header = () => {
   return (
     <Container>
       <CreateBoardModal show={showCBM} onHide={() => setShowCBM(false)} />
+   
       <div className="search-container">
+        <Toggle className="switch mr-3" style={{marginLeft:"30%"}}/>
         <SearchBar />
       </div>
       <div className="logo-container">

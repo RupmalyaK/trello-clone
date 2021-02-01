@@ -31,7 +31,8 @@ const Container = styled(Modal)`
     margin-top: 100px;
     border-radius: 3px;
     padding:0px;
-    background:#f4f5f7;
+    background:${props => props.theme.background.tdm};
+    color:${props => props.theme.text.tdm};
 
   }
  
@@ -54,15 +55,16 @@ const Container = styled(Modal)`
     flex-direction: column;
     padding:10px;
     height:200px;
+
     
   };
   .user-icons {
     display: flex;
     padding: 5px;
     .add-user-icon{
-      color:#212529;
+      color:${props => props.theme.button.signUp};
       &:hover{
-        color:#636669;
+        color:${props => props.theme.button["signUp-hover"]};
       }
     };
   }
@@ -84,6 +86,7 @@ const Container = styled(Modal)`
   .name-input {
     background: none;
     border: 0px;
+    background:${props => props.theme.background.textArea};
     &:focus {
       outline: none;
     }
@@ -116,6 +119,7 @@ const Container = styled(Modal)`
     height:180px;
     width:100%;
     margin-top:10px;
+    background:${props => props.theme.background.textArea};
     &:focus{
       border:0px;
       outline-color:blue;
@@ -142,6 +146,7 @@ const Container = styled(Modal)`
     0 0 0 1px rgba(9, 30, 66, 0.08);
     display:flex;
     padding:5px;
+    background:${props => props.theme.background.dropdown};
    
   }
 `;

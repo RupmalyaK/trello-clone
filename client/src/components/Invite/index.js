@@ -8,7 +8,7 @@ import { Close } from "@material-ui/icons";
 const Container = styled.div`
   width: 300px;
   height: 200px;
-
+  color:white !important;
   background: rgb(255, 255, 255);
   position: absolute;
   z-index: 70;
@@ -20,30 +20,36 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   border-radius: 3px;
-  color: #5e6c84 !important;
+  color:${props => props.theme.text.task} !important;
   overflow-y:scroll;
   overflow-x:hidden;
+  background:${props => props.theme.background.dropdown};
   .invite-heading {
-    color: #5e6c84;
+   
     font-size: 1.2rem;
     padding: 10px;
+  
   }
   .invite-name-input {
-    box-shadow: inset 0 0 0 2px #dfe1e6;
+    box-shadow: inset 0 0 0 2px ${props => props.theme.button.signUp};
     border: 0px;
     background: #fafbfc;
     font-size: 1rem;
-    width: 90%;
+    width: 98%;
     height: 30px;
     padding: 5px;
+    margin-top:10px;
+    background:${({theme,currentTheme}) => currentTheme === "dark" ? theme.button.signUp : "white"};
     &:hover {
-      background: #e1e1e2;
+      background:${({theme,currentTheme}) => currentTheme === "dark" ? theme.button["signUp-hover"] : "#b2b2b2"};
     }
+ 
     &:focus {
       border: 0px;
       outline: none;
-      box-shadow: inset 0 0 0 2px #0079bf;
-      background: #fafbfc;
+      background:${({theme,currentTheme}) => currentTheme === "dark" ? theme.background["invite-input-hover"] : "#b2b2b2"};
+     
+      border:none;
     }
   }
   .users {
@@ -95,6 +101,7 @@ const Invite = ({ handleClose }) => {
   const { currentBoard } = useSelector((state) => state.boards);
   const [userNameInput, setUserNameInput] = useState("");
   const dispatch = useDispatch();
+  const {currentTheme} = useSelector(state => state.system);
   const handleChange = (e) => {
     setUserNameInput(e.target.value);
     dispatch(getUsersByUserName(e.target.value));
@@ -142,7 +149,7 @@ const Invite = ({ handleClose }) => {
     return handleUnmount;
   }, []);
   return (
-    <Container ref={containerRef}>
+    <Container ref={containerRef} currentTheme={currentTheme}>
       <CloseIcon onClick={handleClose} />
       <span className="invite-heading">Invite to board</span>
       <Line />

@@ -13,7 +13,7 @@ const Container = styled.div`
   .side-content {
     width: 300px;
     height: 300px;
-    background: white;
+    background:${props => props.theme.background.dropdown};
     padding: 10px;
     overflow: scroll;
     position: absolute;
@@ -34,6 +34,7 @@ const Container = styled.div`
     height: 100%;
     padding-top: 21px;
     border: 0px;
+    background:${props => props.theme.background.textArea};
     font-size: 1.2rem;
     &:focus {
       border: none;
@@ -52,7 +53,7 @@ const Container = styled.div`
   .add-card-button-button {
     height: 40px;
     width: 100px;
-    background: #5aac44;
+    background: ${props => props.theme.button.signUp};
     border: 0px;
     color: rgb(255, 255, 255);
     border-radius: 3px;
@@ -62,7 +63,7 @@ const Container = styled.div`
       outline: none;
     }
     &:hover {
-      background: #6ab456;
+      background: ${props => props.theme.button["signUp-hover"]};
     }
   }
   .left-side {

@@ -7,7 +7,7 @@ const taskSchema = new Schema({
         type:String,
         required:true,
         maxLength:30,
-        minlength:3,
+        minlength:1,
     },
     users:{
         type: [{ type: Schema.Types.ObjectId, ref: "user" }],

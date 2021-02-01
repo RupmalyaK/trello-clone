@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { colorArr } from "../../utils/constants";
-import { Description as DescriptionIcon } from "@material-ui/icons/";
+import { ClearAll as DescriptionIcon } from "@material-ui/icons/";
+
 import { Draggable } from "react-beautiful-dnd";
 import { boardUsers } from "../../utils/func.js";
 import TaskDetailModal from "../TaskDetailModal";
@@ -12,14 +13,19 @@ const Container = styled.div`
   width: 100%;
   height: 150px;
   background: ${(props) => props.theme.background["board-category-task"]};
-  padding: 20px 20px 5px 20px;
+  padding: 20px 20px 20px 20px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
   border-radius: 3px;
+  color:${props => props.theme.text.task};
   box-shadow: 0 1px 0 rgba(9, 30, 66, 0.25);
   cursor: pointer;
+  .description-icon-container{
+    color:${props => props.theme.icon.task};
+
+  }
   .users {
     display: flex;
 
@@ -32,9 +38,9 @@ const Container = styled.div`
 
 const ColorIcon = styled.div`
   width: 20%;
-  height: 25px;
+  height: 10px;
   background: ${(props) => props.backgroundColor};
-  border-radius: 10%;
+  border-radius: 30px;
   border: 1px solid ${(props) => props.backgroundColor};
 `;
 

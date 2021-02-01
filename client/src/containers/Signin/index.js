@@ -9,7 +9,7 @@ import {useHistory} from "react-router-dom";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
-  background: orange;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
