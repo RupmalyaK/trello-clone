@@ -24,17 +24,20 @@ const Container = styled.div`
   position: relative;
   overflow: hidden;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-top:20px;
   min-width:300px;
   border-radius: 5px;
+
   .heading {
-    margin: 10px;
+    padding:10px;
+    max-height:60%;
   }
   .short-users {
     background: rgba(0, 0, 0, 0.6);
     width: 100%;
     padding: 10px;
+    min-height:30%;
     display: flex;
     justify-content: flex-start;
     align-items: center;
