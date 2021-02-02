@@ -7,6 +7,7 @@ import Button from "../../components/Button";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpAsync as signUp,clearSignUpErrors } from "../../store/actions/userAction.js";
 import {useHistory} from "react-router-dom";
+import Toggle from "../../components/Toggle";
 const Container = styled.div`
   width: 100vw;
   height: 100vh;
@@ -150,6 +151,7 @@ const Signup = () => {
           Already have an Atlassian account? Log in
         </span>
       </SignUpBox>
+      <Toggle className="switch mt-5"/>
     </Container>
   );
 };

@@ -2,7 +2,7 @@ export const lightTheme = {
   text: {
     heading: "rgb(94, 108, 132)",
     signUp: "rgb(255, 255, 255)",
-    "signUp-bottom": "pink",
+    "signUp-bottom": "rgb(0, 82, 204)",
     searchBar: "#172b4d",
     "cbm-input": "#fff",
     "create-board-button": "#a5adba",
@@ -32,6 +32,7 @@ export const lightTheme = {
     "board-category-task": "#fff",
     boards:"#fff",
     dropdown:"#fff",
+    loader:"#fff",
   },
   border: {
     "input-border": "rgb(223, 225, 230)",
@@ -93,6 +94,7 @@ export const darkTheme = {
     dropdown:"#121220",
     "invite-input-hover":"#cb6f7e",
     textArea:"#3a4859",
+    loader:"#1b1b2f",
   },
   border: {
     "input-border": "#e43f5a",
