@@ -9,6 +9,7 @@ import LoadingScreen from "../../components/LoadingScreen";
 
 const Container = styled.div`
   min-height:100vh;
+  width:100vw;
   background:${props => props.theme.background.boards};
   .content {
     padding: 30px;

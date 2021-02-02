@@ -10,7 +10,7 @@ export const lightTheme = {
     "cbm-side": "#5e6c84",
     "board-box": "#fff",
      auth:"#000",
-    "boards-heading":"#fff",
+    "boards-heading":"black",
     task:"#000",
     category:"#000",
     tdm:"#000",
