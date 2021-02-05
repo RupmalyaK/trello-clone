@@ -10,6 +10,7 @@ const INITIAL_STATE = {
 };
 
 const boardReducer = (state = INITIAL_STATE, action) => {
+
   const { type, payLoad } = action;
   switch (type) {
     case actionTypes.SET_IS_LOADING:

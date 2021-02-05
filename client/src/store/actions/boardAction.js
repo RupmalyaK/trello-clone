@@ -90,11 +90,12 @@ export const getCurrentBoard = ({boardId},setIsLoading) => {
 
 export const updateAndGetBoard = (
   id,
-  { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex },setIsLoading
+  { name, userId, colorIndex, tasks, isChangingStar, starred, categoryIndex },setIsLoading,shouldNotGet
 ) => {
   return async (dispatch,getState) => {
     const {id:userId} = getState().user;
     try {
+     
       await updateBoardById(id, {
         name,
         colorIndex,
@@ -104,6 +105,11 @@ export const updateAndGetBoard = (
         isChangingStar,
         userId,
       });
+      if(shouldNotGet)
+        {  
+          return;
+        }
+     
       dispatch(getCurrentBoard({boardId:id},setIsLoading));
     } catch (err) {
       console.log(err);

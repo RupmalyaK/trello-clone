@@ -28,9 +28,10 @@ import LoadingScreen from "../../components/LoadingScreen";
 import UserIconContainer from "../../components/UserIcon";
 const Container = styled.div`
   width: 100vw;
-  height:100vh;
-  background: ${(props) => props.currentTheme === "light" ? props.backgroundColor : "#1b1b2f"};
-  overflow-y:scroll;
+  height: 100vh;
+  background: ${(props) =>
+    props.currentTheme === "light" ? props.backgroundColor : "#1b1b2f"};
+  overflow-y: scroll;
   .top-content {
     margin-top: 40px;
     justify-content: flex-start;
@@ -91,10 +92,10 @@ const Container = styled.div`
 
     .category {
       width: 25%;
-      min-width:300px;
+      min-width: 300px;
       background: ${({ theme, isDraggingOver }) =>
         !isDraggingOver ? theme.background["board-category"] : "orange"};
-        color:${props => props.theme.text.category};
+      color: ${(props) => props.theme.text.category};
       position: relative;
       padding: 30px 30px 50px 30px;
       .category-title {
@@ -106,11 +107,10 @@ const Container = styled.div`
   }
 `;
 
-
 const Board = (props) => {
   const { boardid } = useParams();
   const dispatch = useDispatch();
-  const { currentBoard,isLoading } = useSelector((state) => state.boards);
+  const { currentBoard, isLoading } = useSelector((state) => state.boards);
   const [tasksIds, setTaskIds] = useState(null);
   const [isChangingName, setIsChangingname] = useState(false);
   const [nameInput, setNameInput] = useState(
@@ -124,10 +124,8 @@ const Board = (props) => {
   const boardNameInputRef = useRef(null);
   const [isShowingInvite, setIsShowingInvite] = useState(false);
   const { id: userId } = useSelector((state) => state.user);
-  const {currentTheme} = useSelector(state => state.system);
-
-
-  
+  const { currentTheme } = useSelector((state) => state.system);
+  console.log(tasksIds);
   useEffect(() => {
     if (isChangingName) {
       boardNameInputRef.current.focus();
@@ -135,7 +133,7 @@ const Board = (props) => {
   }, [isChangingName]);
 
   useEffect(() => {
-    if (currentBoard && currentBoard.length !== 0) {
+    if (currentBoard) {
       const tasks = {
         toDoTasks: [],
         inDevelopmentTasks: [],
@@ -143,7 +141,7 @@ const Board = (props) => {
         finishedTasks: [],
       };
       currentBoard.toDoTasks.forEach((task) => tasks.toDoTasks.push(task._id));
-      currentBoard.inDevelopmentTasks.forEach((task) =>
+         currentBoard.inDevelopmentTasks.forEach((task) =>
         tasks.inDevelopmentTasks.push(task._id)
       );
       currentBoard.toBeReviewedTasks.forEach((task) =>
@@ -155,37 +153,44 @@ const Board = (props) => {
       setTaskIds(tasks);
     }
   }, [currentBoard]);
-
+ 
   useEffect(() => {
-    dispatch(getCurrentBoard({boardId:boardid},true));
+    dispatch(getCurrentBoard({ boardId: boardid }, true));
   }, [boardid]);
 
-  if(!userId)
-    {
-      history.push("/signin");
-      return <></>
-    }
-  if(isLoading)
-    {
-      return <LoadingScreen />
-    }  
+  if (!userId) {
+    history.push("/signin");
+    return <></>;
+  }
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+  console.log(tasksIds);
   const showUsers = () => {
-   if (!currentBoard) {
+    if (!currentBoard) {
       return;
     }
-    const UserComponenets = boardUsers(currentBoard.users).map((user,index) => (
-      <UserIconContainer
-        backgroundColor={colorArr[user.colorIndex]}
-        className="ml-3"
-        userName={user.userName}
-        style={{border:"5px solid black",padding:"10px",width:"55px",height:"auto"}}
-        key={index}
-      >
-        {user.shortName}
-    </UserIconContainer>
-    ));
-    return UserComponenets; 
+    const UserComponenets = boardUsers([...currentBoard.users]).map(
+      (user, index) => (
+        <UserIconContainer
+          backgroundColor={colorArr[user.colorIndex]}
+          className="ml-3"
+          userName={user.userName}
+          style={{
+            border: "5px solid black",
+            padding: "10px",
+            width: "55px",
+            height: "auto",
+          }}
+          key={index}
+        >
+          {user.shortName}
+        </UserIconContainer>
+      )
+    );
+    return UserComponenets;
   };
+
   const moveActualTasks = (
     sourceCategory,
     sourceIndex,
@@ -204,8 +209,7 @@ const Board = (props) => {
       toBeReviewedTasks,
       finishedTasks,
     };
-   
-    const task = tasks[sourceCategory].splice(sourceIndex, sourceIndex + 1);
+    const task = tasks[sourceCategory].splice(sourceIndex, 1);
     tasks[destinationCategory].splice(destinationIndex, 0, task[0]);
     dispatch(setTasks(tasks));
   };
@@ -229,10 +233,14 @@ const Board = (props) => {
       destinationIndex
     );
     const temp = { ...tasksIds };
-    const task = temp[sourceCategory].splice(sourceIndex, sourceIndex + 1);
+    //const temp = {toDoTasks:[...tasksIds.toDoTasks],inDevelopmentTasks:[...tasksIds.inDevelopmentTasks]};
+    const task = temp[sourceCategory].splice(sourceIndex, 1);
     temp[destinationCategory].splice(destinationIndex, 0, task[0]);
-    dispatch(updateBoard(boardid, { tasks: temp }));
+  
+  dispatch(updateBoard(boardid, { tasks: temp }, false, true));
+   setTaskIds(temp);
   };
+ 
   const handleCreateTask = (name, colorIndex, category) => {
     if (!name) {
       return;
@@ -270,11 +278,10 @@ const Board = (props) => {
   };
 
   const showCategory = (categoryIndex) => {
-    if(!categoryIndex)
-      {
-        return;
-      }
-    const CategoryComponents = categoryIndex.map((category,index) => {
+    if (!categoryIndex) {
+      return;
+    }
+    const CategoryComponents = categoryIndex.map((category, index) => {
       switch (categories[category]) {
         case "toDo":
           return (
@@ -283,7 +290,6 @@ const Board = (props) => {
               type="category"
               style={{ position: "relative" }}
               key={index}
-              
             >
               {(provided, snapshot) => (
                 <div
@@ -325,7 +331,11 @@ const Board = (props) => {
           );
         case "inDevelopment":
           return (
-            <Droppable key={index} droppableId="inDevelopmentTasks" type="category">
+            <Droppable
+              key={index}
+              droppableId="inDevelopmentTasks"
+              type="category"
+            >
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
@@ -367,7 +377,11 @@ const Board = (props) => {
           );
         case "toBeReviewed":
           return (
-            <Droppable key={index} droppableId="toBeReviewedTasks" type="category">
+            <Droppable
+              key={index}
+              droppableId="toBeReviewedTasks"
+              type="category"
+            >
               {(provided, snapshot) => (
                 <div
                   ref={provided.innerRef}
@@ -453,10 +467,11 @@ const Board = (props) => {
   };
 
   const handleDragEnd = (a) => {
-    console.log(a);
+   
     if (!a.source || !a.destination) {
       return;
     }
+  //  console.log("EVEN BEFORE", tasksIds);
     moveTask(
       a.source.droppableId,
       a.source.index,
@@ -486,7 +501,7 @@ const Board = (props) => {
                 ref={boardNameInputRef}
                 onKeyDown={(e) => {
                   if (e.keyCode === 13) {
-                    dispatch(updateBoard(boardid, { name: nameInput },true));
+                    dispatch(updateBoard(boardid, { name: nameInput }, true));
                     setIsChangingname(false);
                   }
                 }}
@@ -494,7 +509,7 @@ const Board = (props) => {
               <div
                 className="send-icon-container"
                 onClick={(e) => {
-                  dispatch(updateBoard(boardid, { name: nameInput },true));
+                  dispatch(updateBoard(boardid, { name: nameInput }, true));
                   setIsChangingname(false);
                 }}
               >
@@ -514,10 +529,14 @@ const Board = (props) => {
         <Icon
           onClick={(e) =>
             dispatch(
-              updateBoard(boardid, {
-                starred: !currentBoard.starred,
-                isChangingStar: true,
-              },true)
+              updateBoard(
+                boardid,
+                {
+                  starred: !currentBoard.starred,
+                  isChangingStar: true,
+                },
+                true
+              )
             )
           }
         >

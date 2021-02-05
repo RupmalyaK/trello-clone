@@ -14,7 +14,7 @@ export const updateBoardById = (id, data) => {
 
 export const getBoardById = ({boardId,userId}) => {
 
-  return GetRequest(`/boards/board/getboard?boardid=${boardId}&userid=${userId}`);
+  return GetWithCancel(`/boards/board/getboard?boardid=${boardId}&userid=${userId}`);
 };
 
 export const addTaskInBoard = (data) => {
