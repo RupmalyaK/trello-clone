@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Modal } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
-import { boardUsers } from "../../utils/func.js";
+
 import "./style.css";
 import { colorArr } from "../../utils/constants.js";
 import Icon from "../Icon";
@@ -31,8 +31,8 @@ const Container = styled(Modal)`
     margin-top: 100px;
     border-radius: 3px;
     padding:0px;
-    background:${props => props.theme.background.tdm};
-    color:${props => props.theme.text.tdm};
+    background:${(props) => props.theme.background.tdm};
+    color:${(props) => props.theme.text.tdm};
 
   }
  
@@ -62,9 +62,9 @@ const Container = styled(Modal)`
     display: flex;
     padding: 5px;
     .add-user-icon{
-      color:${props => props.theme.button.signUp};
+      color:${(props) => props.theme.button.signUp};
       &:hover{
-        color:${props => props.theme.button["signUp-hover"]};
+        color:${(props) => props.theme.button["signUp-hover"]};
       }
     };
   }
@@ -86,7 +86,7 @@ const Container = styled(Modal)`
   .name-input {
     background: none;
     border: 0px;
-    background:${props => props.theme.background.textArea};
+    background:${(props) => props.theme.background.textArea};
     &:focus {
       outline: none;
     }
@@ -119,7 +119,7 @@ const Container = styled(Modal)`
     height:180px;
     width:100%;
     margin-top:10px;
-    background:${props => props.theme.background.textArea};
+    background:${(props) => props.theme.background.textArea};
     &:focus{
       border:0px;
       outline-color:blue;
@@ -146,7 +146,7 @@ const Container = styled(Modal)`
     0 0 0 1px rgba(9, 30, 66, 0.08);
     display:flex;
     padding:5px;
-    background:${props => props.theme.background.dropdown};
+    background:${(props) => props.theme.background.dropdown};
    
   }
 `;
@@ -172,19 +172,18 @@ const TaskDetail = ({ onHide, ...props }) => {
   );
 
   useEffect(() => {
-    const handleMouseDown = e => {
-      if(adduserRef.current && adduserRef.current.contains(e.target))
-      {
+    const handleMouseDown = (e) => {
+      if (adduserRef.current && adduserRef.current.contains(e.target)) {
         return;
       }
       setIsShowingAddUser(false);
-    }
-    
-    document.addEventListener("mousedown",handleMouseDown)
+    };
+
+    document.addEventListener("mousedown", handleMouseDown);
     return () => {
-      document.removeEventListener("mousedown",handleMouseDown);
-    }
-  }, [])
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
+  }, []);
   useEffect(() => {
     if (currentTask) {
       setNameInput(currentTask.name);
@@ -200,8 +199,12 @@ const TaskDetail = ({ onHide, ...props }) => {
   const { name, description, users, colorIndex, _id } = currentTask || {};
 
   const showUsers = () => {
-    const shortNamedUsers = boardUsers(users);
-    const UserIconComponenets = shortNamedUsers.map((user,index) => (
+    if(!users)
+      {
+        return <></>;
+      }
+    const shortNamedUsers = users;
+    const UserIconComponenets = shortNamedUsers.map((user, index) => (
       <UserIconContainer
         backgroundColor={colorArr[user.colorIndex]}
         key={index}
@@ -215,32 +218,28 @@ const TaskDetail = ({ onHide, ...props }) => {
   };
 
   const showUserNotInTask = () => {
-    const { users,_id } = currentTask || {};
+    const { users, _id } = currentTask || {};
     if (!users) {
       return;
     }
     const map = {};
     users.forEach((user) => (map[user._id] = true));
-    const filteredUsers = boardUsers(
-      currentBoard.users.filter((user) => !map[user._id])
-    );
+    const filteredUsers = currentBoard.users.filter((user) => !map[user._id]);
 
-    const UserComponenets = filteredUsers.map((user,index) => (
+    const UserComponenets = filteredUsers.map((user, index) => (
       <UserIconContainer
         key={index}
-        onClick={(e) =>{
+        onClick={(e) => {
           dispatch(
             addTaskUser({
               boardId: currentBoard._id,
               userId,
               otherUserId: user._id,
-              taskId:_id
+              taskId: _id,
             })
-          )
+          );
           setIsShowingAddUser(false);
-        }
-  
-        }
+        }}
         className="mr-3"
         backgroundColor={colorArr[user.colorIndex]}
         userName={user.userName}
@@ -341,20 +340,22 @@ const TaskDetail = ({ onHide, ...props }) => {
               <AddIcon
                 className="add-user-icon ml-3"
                 style={{ fontSize: "2rem", cursor: "pointer" }}
-                onClick={e => setIsShowingAddUser(true)}
+                onClick={(e) => setIsShowingAddUser(true)}
               />
-          {isShowingAddUser &&    <div className="add-task-user" ref={adduserRef}>
-                {showUserNotInTask()}
-                <CloseIcon
-                onClick={e => setIsShowingAddUser(false)}
-                  style={{
-                    cursor: "pointer",
-                    position: "absolute",
-                    top: "5%",
-                    right: "2%",
-                  }}
-                />
-              </div>}
+              {isShowingAddUser && (
+                <div className="add-task-user" ref={adduserRef}>
+                  {showUserNotInTask()}
+                  <CloseIcon
+                    onClick={(e) => setIsShowingAddUser(false)}
+                    style={{
+                      cursor: "pointer",
+                      position: "absolute",
+                      top: "5%",
+                      right: "2%",
+                    }}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

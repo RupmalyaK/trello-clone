@@ -151,7 +151,7 @@ export const updateTask = ({
   userId,
   boardId,
 }) => {
-  return async dispatch => {
+  return async (dispatch,getState )=> {
     try{
       await updateTaskById({taskId,name,description,colorIndex,newUserId,userId,boardId});
       dispatch(getCurrentBoard({boardId:boardId}));

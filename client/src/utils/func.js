@@ -13,7 +13,7 @@ export const boardUsers = (users) => {
             {
                 continue;
             }
-            if(map[user.displayName.slice(0,i+1) + user.colorIndex])
+            if(map[user.displayName.slice(0,i+1).toUpperCase() + user.colorIndex])
                 {
                     if(i === user.displayName.length - 1)
                         {
@@ -23,13 +23,14 @@ export const boardUsers = (users) => {
                     continue;
                 }
               
-                map[user.displayName.slice(0,i+1) + user.colorIndex] = true;
+                map[user.displayName.slice(0,i+1).toUpperCase() + user.colorIndex] = true;
                 user.shortName = user.displayName.slice(0,i+1);
                 userArr.push(user);
                 return;
         }
-  
+        
     });
+    console.log(map);
     return userArr;
 }
 

@@ -170,7 +170,7 @@ const Board = (props) => {
     if (!currentBoard) {
       return;
     }
-    const UserComponenets = boardUsers([...currentBoard.users]).map(
+    const UserComponenets = currentBoard.users.map(
       (user, index) => (
         <UserIconContainer
           backgroundColor={colorArr[user.colorIndex]}
@@ -184,7 +184,7 @@ const Board = (props) => {
           }}
           key={index}
         >
-          {user.shortName}
+          {user.shortName.toUpperCase()}
         </UserIconContainer>
       )
     );

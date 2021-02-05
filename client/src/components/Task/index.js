@@ -4,7 +4,7 @@ import { colorArr } from "../../utils/constants";
 import { ClearAll as DescriptionIcon } from "@material-ui/icons/";
 
 import { Draggable } from "react-beautiful-dnd";
-import { boardUsers } from "../../utils/func.js";
+
 import TaskDetailModal from "../TaskDetailModal";
 import { useDispatch } from "react-redux";
 import { setCurrentTask } from "../../store/actions/boardAction.js";
@@ -51,7 +51,7 @@ const Task = ({ name, _id, users, index, colorIndex, description }) => {
     if (!users) {
       return;
     }
-    const taskUsers = boardUsers(users);
+    const taskUsers = users;
     let UserIconComponents = taskUsers.map((user,index) => (
       <UserIconContainer
         className="mr-3"
