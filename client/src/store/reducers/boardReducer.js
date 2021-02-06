@@ -81,7 +81,7 @@ const boardReducer = (state = INITIAL_STATE, action) => {
               }
           }
         });
-        console.log(task);
+     
         return task;
       });
       return { ...state, currentBoard: board, isLoading: false };}

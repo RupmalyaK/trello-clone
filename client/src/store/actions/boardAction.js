@@ -153,9 +153,19 @@ export const updateTask = ({
 }) => {
   return async (dispatch,getState )=> {
     try{
+      const board = getState().boards.currentBoard;
       await updateTaskById({taskId,name,description,colorIndex,newUserId,userId,boardId});
       dispatch(getCurrentBoard({boardId:boardId}));
       const task = await getTaskById({boardId,userId,taskId});
+      task.users = task.users.map(user => {
+        for(let i = 0; i < board.users.length; i++)
+          {
+            if(user._id === board.users[i]._id)
+              {
+                return board.users[i];
+              }
+          }
+      });
       dispatch(createAction(actionTypes.SET_CURRENT_TASK,task))
     }
     catch(err)
@@ -196,10 +206,20 @@ export const addUserBoard = ({boardId,userId,otherUserId}) => {
 
 }
 export const addTaskUser  = ({boardId,userId,otherUserId,taskId}) => {
-  return async dispatch => {
+  return async (dispatch, getState )=> {
     try{
+        const board = getState().boards.currentBoard;
         await addUserToTask({boardId,userId,otherUserId,taskId});
         const task = await getTaskById({boardId,userId,taskId});
+        task.users = task.users.map(user => {
+          for(let i = 0; i < board.users.length; i++)
+            {
+              if(user._id === board.users[i]._id)
+                {
+                  return board.users[i];
+                }
+            }
+        });
         dispatch(createAction(actionTypes.SET_CURRENT_TASK,task));
         dispatch(getCurrentBoard({boardId}));
       }

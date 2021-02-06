@@ -245,7 +245,7 @@ const TaskDetail = ({ onHide, ...props }) => {
         userName={user.userName}
         style={{ cursor: "pointer" }}
       >
-        {user.shortName.charAt(0).toUpperCase()}
+        {user.shortName.toUpperCase()}
       </UserIconContainer>
     ));
     return UserComponenets;
