@@ -62,11 +62,12 @@ const Task = ({ name, _id, users, index, colorIndex, description }) => {
         {user.shortName.toUpperCase()}
       </UserIconContainer>
     ));
+    const totalUsers = UserIconComponents.length;
     if (UserIconComponents.length > 3) {
       UserIconComponents = UserIconComponents.slice(0, 3);
     }
 
-    return <>{UserIconComponents} {UserIconComponents.length > 3 && <span>{UserIconComponents.length-3} more users..</span>} </>;
+    return <>{UserIconComponents} {totalUsers > 3 && <span >{totalUsers-3} more users..</span>} </>;
   };
   return (
     <>
